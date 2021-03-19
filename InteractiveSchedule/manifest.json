@@ -1,0 +1,10 @@
+﻿{
+    "Name": "InteractiveSchedule",
+    "Author": "blueberry",
+    "Version": "1.0.0",
+    "Description": "Mod Template",
+    "UniqueID": "blueberry.InteractiveSchedule",
+    "EntryDll": "InteractiveSchedule.dll",
+    "MinimumApiVersion": "3.0.0",
+    "UpdateKeys": [ "Nexus:" ]
+}

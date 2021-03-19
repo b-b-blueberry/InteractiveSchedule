@@ -1,0 +1,45 @@
+﻿{
+
+	"ui.windowmenu.title": "Menu",
+	"ui.windowbarmenu.title": "Menu",
+	"ui.characterlistmenu.title": "Characters",
+	"ui.tileinfomenu.title": "Tile Information",
+	"ui.modinfomenu.title": "Interactive Schedule",
+	"ui.mapviewmenu.title": "Map View",
+
+	"ui.modinfo.body": "body text here\nblueberry - 2021",
+
+	"ui.character.locationformat": "{{LocationName}}\n{{TileLocation}}",
+
+	"ui.tileinfo.heading": "Coordinates",
+
+	"ui.ok": "OK",
+	"ui.cancel": "Cancel",
+	"ui.save": "Save",
+	"ui.load": "Load",
+	"ui.refresh": "Refresh",
+	"ui.play": "Play",
+	"ui.pause": "Pause",
+	"ui.stop": "Stop",
+	"ui.add": "Add",
+	"ui.remove": "Remove",
+
+	"ui.path.start": "Pick start tile",
+	"ui.path.inprogress": "Pick tiles until finished",
+	"ui.schedule.start": "New schedule",
+	"ui.npc.load": "Load character",
+	"ui.npc.save": "Save character",
+	"ui.schedule": "Schedule",
+	"ui.dialogue": "Dialogue",
+	"ui.events": "Events",
+
+	"action.characterlistmenu.goto.label": "Go to",
+	"action.characterlistmenu.schedule.label": "View schedule",
+	"action.mapviewmenu.viewlocation.label": "View location...",
+	"action.mapviewmenu.returnviewlocation.label": "Return to current location",
+
+	"button.path.toggle": "Edit schedule path",
+	"button.grid.toggle": "Show grid",
+	"button.tileinfo.toggle": "Show tile info",
+	"button.timepause.toggle": "Pause time"
+}
