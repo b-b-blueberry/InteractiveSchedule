@@ -112,7 +112,7 @@ def main():
 
             # Populate readily-available fields
             out_js["content"]["verticalLineSpacing"] = in_js["LineSpacing"]
-            out_js["content"]["horizontalLineSpacing"] = in_js["Spacing"]
+            out_js["content"]["horizontalSpacing"] = in_js["Spacing"]
             out_js["content"]["defaultCharacter"] = in_js["DefaultCharacter"]
             out_js["content"]["characterMap"] = in_js["Characters"]
 
