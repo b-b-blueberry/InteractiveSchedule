@@ -90,7 +90,7 @@ def main():
                     "width": bounds_field["Width"],
                     "height": bounds_field["Height"],
                 })
-                crop_field = field_to_str_int_dict(glyph["BoundsInTexture"])
+                crop_field = field_to_str_int_dict(glyph["Cropping"])
                 cropping.append({
                     "x": crop_field["X"],
                     "y": crop_field["Y"],
