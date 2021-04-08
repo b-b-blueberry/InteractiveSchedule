@@ -30,8 +30,10 @@ namespace InteractiveSchedule.Interface
 		private static readonly Rectangle MuteButtonSource = new Rectangle(78, 0, 12, 12);
 		private static readonly List<string> IconsToAdd = new List<string>
 		{
-			nameof(CharacterListMenu), "ScheduleMenu", "DialogueMenu", "FileManagerMenu",
-			nameof(TileInfoMenu), nameof(MapViewMenu), "OptionsMenu", "HelpMenu"
+			nameof(Menus.CharacterListMenu), nameof(Menus.SchedulePreviewMenu),
+			"DialogueMenu", "FileManagerMenu",
+			nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu),
+			"OptionsMenu", "HelpMenu"
 		};
 
 		public Taskbar()
@@ -42,6 +44,7 @@ namespace InteractiveSchedule.Interface
 
 		protected override void cleanupBeforeExit()
 		{
+			this.SetActiveState(active: false);
 			ExpandButton = null;
 			AvatarButton = null;
 			MuteButton = null;
@@ -149,32 +152,117 @@ namespace InteractiveSchedule.Interface
 				MuteButtonSource.Height * MenuScale);
 		}
 
+		/// <summary>
+		/// Enables or disables taskbar features, hiding it offscreen if disabled.
+		/// </summary>
+		/// <param name="active">Whether to enable or disable the taskbar.</param>
 		public void SetActiveState(bool active)
 		{
 			IsExpanded = active;
 			Game1.activeClickableMenu = active ? Desktop : null;
-			Game1.displayHUD = !active;
 			Game1.isTimePaused = active;
+			Game1.displayHUD = !active;
+			Game1.displayFarmer = !active;
+			Game1.viewportFreeze = active || !string.IsNullOrEmpty(ModEntry.Instance._originalLocation);
+			Game1.player.viewingLocation.Value = active ? Game1.currentLocation.Name : null;
+			_xTranslateScale += (active ? 1 : -1) * _xTranslateRate;
+		}
+
+		/// <summary>
+		/// Check whether any taskbar icons are under the cursor coordinates provided, and if so, perform on-click behaviours.
+		/// </summary>
+		internal IClickableMenu TryClickTaskbarIcon(int x, int y)
+		{
+			// Clicking taskbar icons
+			if (Icons.FirstOrDefault(i => i.containsPoint(x, y)) is ClickableTextureComponent icon && icon != null)
+			{
+				IClickableMenu menu = Desktop.Children.FirstOrDefault(child => icon.name == child.GetType().Name);
+				if (menu == null)
+				{
+					menu = this.CreateNewMenu(icon.name);
+				}
+				else
+				{
+					// Redirect to existing menu windows if they exist
+					if (menu.GetParentMenu() is WindowBar windowBar)
+					{
+						windowBar.IsMinimised = !windowBar.IsMinimised;
+						Desktop.SelectedChildIndex = Desktop.Children.IndexOf(menu);
+					}
+				}
+				return menu;
+			}
+			return null;
+		}
+
+		/// <summary>
+		/// Creates and redirects window selection to a new <see cref="IClickableMenu"/> on the <see cref="Desktop"/>.
+		/// </summary>
+		/// <param name="typeName">Name of the menu type to create, as stored in elements of <see cref="Icons"/>, indexed by <see cref="IconsToAdd"/>.</param>
+		public IClickableMenu CreateNewMenu(string typeName)
+		{
+			IClickableMenu menu = null;
+
+			// Add a new menu window to the desktop if no instance currently exists
+			IClickableMenu lastChild = Desktop.Children.LastOrDefault();
+			Point position = lastChild != null
+				? new Point(lastChild.xPositionOnScreen + (25 * MenuScale), lastChild.yPositionOnScreen)
+				: new Point(width + (50 * MenuScale), 10 * MenuScale);
+
+			if (typeName == nameof(Menus.CharacterListMenu))
+			{
+				menu = new Menus.CharacterListMenu(position: position);
+			}
+			else if (typeName == nameof(Menus.SchedulePreviewMenu))
+			{
+				menu = new Menus.SchedulePreviewMenu(position: position);
+			}
+			else if (typeName == nameof(Menus.TileInfoMenu))
+			{
+				menu = new Menus.TileInfoMenu(position: position);
+			}
+			else if (typeName == nameof(Menus.MapMenu))
+			{
+				menu = new Menus.MapMenu(position: position);
+			}
+
+			if (menu != null)
+			{
+				// Resize the window bar once content has been loaded
+				((WindowPage)menu).WindowBar.RealignElements();
+				menu.xPositionOnScreen -= Math.Max(0, Game1.viewport.Width - (menu.xPositionOnScreen + menu.width));
+				menu.yPositionOnScreen -= Math.Max(0, Game1.viewport.Height - (menu.yPositionOnScreen + menu.height));
+				((WindowPage)menu).WindowBar.RealignElements();
+
+				// Register our new menu to the desktop
+				Desktop.Children.Add(menu);
+			}
+
+			return menu;
 		}
 
 		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
+			if (_xTranslateScale > 0f && _xTranslateScale < 1f)
+			{
+				return;
+			}
+
 			// Clicking show/hide button
 			if (ExpandButton.containsPoint(x, y))
 			{
 				this.SetActiveState(!IsExpanded);
-				return;
 			}
 
 			// Clicking main icon
 			if (AvatarButton.containsPoint(x, y))
 			{
-				IClickableMenu menu = Desktop.Children.FirstOrDefault(child => nameof(ModInfoMenu) == child.GetType().Name);
+				IClickableMenu menu = Desktop.Children.FirstOrDefault(child => nameof(Menus.ModInfoMenu) == child.GetType().Name);
 				if (menu == null)
 				{
 					Point position = new Point(width + (75 * MenuScale), 15 * MenuScale);
-					menu = new ModInfoMenu(position);
-					((ModInfoMenu)menu).WindowBar.RealignElements();
+					menu = new Menus.ModInfoMenu(position);
+					((Menus.ModInfoMenu)menu).WindowBar.RealignElements();
 					Desktop.Children.Insert(0, menu);
 				}
 				else
@@ -196,52 +284,8 @@ namespace InteractiveSchedule.Interface
 				return;
 			}
 
-			// Clicking taskbar icons
-			if (Icons.FirstOrDefault(i => i.containsPoint(x, y)) is ClickableTextureComponent icon && icon != null)
-			{
-				IClickableMenu menu = Desktop.Children.FirstOrDefault(child => icon.name == child.GetType().Name);
-				if (menu == null)
-				{
-					// Add a new menu window to the desktop if no instance currently exists
-					IClickableMenu lastChild = Desktop.Children.LastOrDefault();
-					Point position = lastChild != null
-						? new Point(lastChild.xPositionOnScreen + (25 * MenuScale), lastChild.yPositionOnScreen + (25 * MenuScale))
-						: new Point(width + (50 * MenuScale), 50 * MenuScale);
-
-					if (icon.name == nameof(CharacterListMenu))
-					{
-						menu = new CharacterListMenu(position: position);
-					}
-					else if (icon.name == nameof(TileInfoMenu))
-					{
-						menu = new TileInfoMenu(position: position);
-					}
-					else if (icon.name == nameof(MapViewMenu))
-					{
-						menu = new MapViewMenu(position: position);
-					}
-
-					if (menu != null)
-					{
-						// Resize the window bar once content has been loaded
-						menu.xPositionOnScreen -= Math.Max(0, Game1.viewport.Width - (menu.xPositionOnScreen + menu.width));
-						menu.yPositionOnScreen -= Math.Max(0, Game1.viewport.Height - (menu.yPositionOnScreen + menu.height));
-						((WindowPage)menu).WindowBar.RealignElements();
-
-						// Register our new menu to the desktop
-						Desktop.Children.Add(menu);
-					}
-				}
-				else
-				{
-					// Redirect to existing menu windows if they exist
-					if (menu.GetParentMenu() is WindowBar windowBar)
-					{
-						windowBar.IsMinimised = false;
-					}
-				}
-				return;
-			}
+			// Taskbar icons
+			this.TryClickTaskbarIcon(x, y);
 
 			base.receiveLeftClick(x, y, playSound);
 		}
@@ -273,6 +317,7 @@ namespace InteractiveSchedule.Interface
 			{
 				return;
 			}
+
 			/*
 			switch (ModEntry.Instance._state)
 			{
@@ -311,7 +356,6 @@ namespace InteractiveSchedule.Interface
 				origin: Vector2.Zero,
 				effects: IsExpanded ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
 				layerDepth: 1f);
-
 		}
 
 		internal void DrawAvatarButton(SpriteBatch b, Rectangle destinationRectangle)

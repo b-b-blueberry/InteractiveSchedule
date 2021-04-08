@@ -1,0 +1,1 @@
+E:/Dev/Projects/SDV/XNBCLI/xnbcli.exe pack . E:/Dev/Projects/SDV/Projects/InteractiveSchedule/InteractiveSchedule/assets

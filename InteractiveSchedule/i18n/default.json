@@ -1,18 +1,5 @@
 ﻿{
-
-	"ui.windowmenu.title": "Menu",
-	"ui.windowbarmenu.title": "Menu",
-	"ui.characterlistmenu.title": "Characters",
-	"ui.tileinfomenu.title": "Tile Information",
-	"ui.modinfomenu.title": "Interactive Schedule",
-	"ui.mapviewmenu.title": "Map View",
-
-	"ui.modinfo.body": "body text here\nblueberry - 2021",
-
-	"ui.character.locationformat": "{{LocationName}}\n{{TileLocation}}",
-
-	"ui.tileinfo.heading": "Coordinates",
-
+	// Generic UI
 	"ui.ok": "OK",
 	"ui.cancel": "Cancel",
 	"ui.save": "Save",
@@ -24,6 +11,47 @@
 	"ui.add": "Add",
 	"ui.remove": "Remove",
 
+	// Window strings
+	// titles
+	"ui.windowmenu.title": "Menu",
+	"ui.windowbarmenu.title": "Menu",
+	"ui.modinfomenu.title": "Interactive Schedule",
+	"ui.characterlistmenu.title": "Characters",
+	"ui.tileinfomenu.title": "Tiles",
+	"ui.mapmenu.title": "World Map",
+	"ui.schedulepreviewmenu.title": "Schedule Preview",
+	"ui.datetimepickermenu.title": "Date and Time",
+	"ui.modinfo.body": "body text here",
+	"ui.modinfo.credit": "blueberry - 2021",
+	// tabs
+	"ui.tab.tileproperties.label": "Properties",
+	"ui.tab.tileindexes.label": "Indexes",
+	// contents
+	"ui.tileinfo.home.heading": "Coordinates",
+	"ui.tileinfo.tile.heading": "Tile Info",
+	"ui.tileinfo.locationformat": "{{LocationName}}\n{{TilePosition}}",
+	"ui.locationselect.label": "Where do you wish to go?",
+	"ui.tileinfo.tileproperties.text.none": "No properties.",
+	"ui.schedulepreview.home.heading": "Schedule Preview",
+	"ui.schedulepreview.home.text": "No characters selected.",
+
+	// ActionButtons
+	"action.characterlistmenu.gotobutton.label": "Go to",
+	"action.characterlistmenu.openschedulebutton.label": "View schedule",
+	"action.characterlistmenu.returnfrombutton.label": "Return to farmer",
+	"action.characterlistmenu.viewspawnbutton.label": "View spawn point",
+	"action.mapmenu.warpherebutton.label": "Warp farmer to this location",
+	"action.mapmenu.viewlocationbutton.label": "View location...",
+	"action.mapmenu.returnviewlocationbutton.label": "Return to current location",
+	"action.tileinfomenu.gridviewbutton.label": "Toggle grid view",
+	"action.tileinfomenu.tilehighlightbutton.label": "Toggle tile highlighting",
+	"action.tileinfomenu.pathslayerbutton.label": "Toggle paths layer",
+
+	// Notifications
+	"notif.warping.text": "Viewing {{LocationName}}..",
+
+
+	// ???
 	"ui.path.start": "Pick start tile",
 	"ui.path.inprogress": "Pick tiles until finished",
 	"ui.schedule.start": "New schedule",
@@ -32,11 +60,6 @@
 	"ui.schedule": "Schedule",
 	"ui.dialogue": "Dialogue",
 	"ui.events": "Events",
-
-	"action.characterlistmenu.goto.label": "Go to",
-	"action.characterlistmenu.schedule.label": "View schedule",
-	"action.mapviewmenu.viewlocation.label": "View location...",
-	"action.mapviewmenu.returnviewlocation.label": "Return to current location",
 
 	"button.path.toggle": "Edit schedule path",
 	"button.grid.toggle": "Show grid",

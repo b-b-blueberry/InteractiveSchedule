@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using StardewModdingAPI;
 using StardewValley;
 using StardewValley.Menus;
@@ -11,10 +12,15 @@ namespace InteractiveSchedule.Interface
 {
 	/// <summary>
 	/// The body contents of a <see cref="WindowComponent"/>.
-	/// Generates a paired <see cref="Interface.WindowBar"/> when instantiated.
+	/// Generates a paired <see cref="WindowBar"/> when instantiated if not a modal.
 	/// </summary>
-	public abstract class WindowPage : WindowComponent
+	public abstract class WindowPage : Components.WindowComponent
 	{
+		/// <summary>
+		/// Contextual popup window elements.
+		/// </summary>
+		public WindowPage ModalWindow;
+		public readonly bool IsModal;
 		/// <summary>
 		/// Traverses up a level in the page, if the page has some kind of sub-page in addition to its landing page.
 		/// No behaviour if <see cref="IsOnHomePage"/>.
@@ -24,19 +30,18 @@ namespace InteractiveSchedule.Interface
 		/// Reference to this window's paired header bar.
 		/// </summary>
 		public WindowBar WindowBar => _parentMenu is WindowBar ? _parentMenu as WindowBar : null;
-		/// <summary>
-		/// Whether this whole <see cref="WindowPage"/> should be interactible or rendered in any way.
-		/// </summary>
+		/// <summary> Whether this whole <see cref="WindowPage"/> should be interactible or rendered in any way.</summary>
 		public bool ShouldDraw => WindowBar == null || WindowBar.ShouldDrawChild;
-		public override bool IsSelected => !Desktop.Children.Any() || this.GetType().Name == Desktop.Children.First().GetType().Name;
+		public override bool IsSelected => !Desktop.Children.Any() || this.GetType().Name == Desktop.Children.First().GetType().Name || IsModal;
 		/// <summary>
 		/// Whether the window is on some sub-page other than its landing page.
-		/// <see cref="UpButton"/> is displayed if false.
 		/// </summary>
 		public abstract bool IsOnHomePage { get; }
 		/// <summary>
-		/// Whether to enable draw/action behaviours for the sidebar containing items from <see cref="SidebarActionButtons"/>.
+		/// Whether to show the <see cref="UpButton"/> used for navigating towards the landing page.
 		/// </summary>
+		public abstract bool IsUpButtonVisible { get; }
+		/// <summary> Whether to enable draw/action behaviours for the sidebar containing items from <see cref="SidebarActionButtons"/>.</summary>
 		public abstract bool IsActionButtonSidebarVisible { get; }
 		/// <summary>
 		/// Sidebar action buttons are a list of any extra feature buttons in the menu,
@@ -51,38 +56,24 @@ namespace InteractiveSchedule.Interface
 		/// </summary>
 		public Dictionary<ClickableTextureComponent, Point> FloatingActionButtons = new Dictionary<ClickableTextureComponent, Point>();
 
-		public Color BodyTextColour;
-		public Color HeadingTextColour;
 		public Color PageColour;
 		public Color SidebarColour;
 		public Color InnerBorderColourSelected;
 		public Color InnerBorderColourDeselected;
 
-		protected static SpriteFont HeadingTextFont => Game1.dialogueFont;
-		protected static SpriteFont BodyTextFont => Game1.smallFont;
-		/// <summary>
-		/// The area of the page, after considering <see cref="BorderWidth"/>, to place content/multimedia.
-		/// Designed for media spanning the whole width of the page, ignoring padding and sidebars.
-		/// </summary>
-		protected Rectangle BorderSafeArea;
-		/// <summary>
-		/// The area of the page, after considering <see cref="BorderWidth"/>, <see cref="Padding"/>, and <see cref="ActionButtonSidebarArea"/>, to place content/multimedia.
-		/// Designed for common spaced page elements such as text and images.
-		/// </summary>
-		protected Rectangle ContentSafeArea;
 		/// <summary>
 		/// The area of the page outside of the <see cref="ContentSafeArea"/> to position items from <see cref="SidebarActionButtons"/>.
 		/// If this and <see cref="UpButton"/> are visible, it will also position itself here.
 		/// </summary>
-		protected Rectangle ActionButtonSidebarArea;
+		public Rectangle ActionButtonSidebarArea { get; private set; }
 		/// <summary>
 		/// Position for <see cref="SidebarActionButtons"/> to be centred within <see cref="ActionButtonSidebarArea"/> if origin is <see cref="Vector2.Zero"/>.
 		/// </summary>
-		protected Point ActionButtonOrigin;
+		public Point ActionButtonOrigin { get; private set; }
+		protected bool ShouldUpdateHoverText => IsSelected && ShouldDraw && string.IsNullOrEmpty(_hoverText);
 
-		protected const int BorderWidth = 2;
-		protected const float ActionButtonHoverScale = 0.6f;
-		protected const int ActionButtonIconOffsetY = 60;
+		protected const float ActionButtonHoverScale = 0.4f;
+		protected const int ActionButtonIconSourceY = 74;
 		protected static readonly Point UpButtonSize = new Point(16, 16);
 		protected static readonly Point ActionButtonSize = new Point(18, 18);
 		protected static readonly Point ActionButtonIconSize = new Point(14, 14);
@@ -90,10 +81,62 @@ namespace InteractiveSchedule.Interface
 		private static readonly Rectangle UpButtonSource = new Rectangle(46, 0, UpButtonSize.X, UpButtonSize.Y);
 		private static readonly Rectangle UpButtonIconSource = new Rectangle(62, 0, UpButtonSize.X, UpButtonSize.Y);
 		private static readonly Rectangle ActionButtonSource = new Rectangle(44, 26, ActionButtonSize.X, ActionButtonSize.Y);
-
-		protected WindowPage(Point position) : base()
+		private const int ActionButtonIconRowCount = 9;
+		protected enum ActionButtonIcon
 		{
-			this.GenerateWindowBar(position);
+			Return = 0,
+			View,
+			Schedule,
+			ViewSpawn,
+			_4,
+			Flag,
+			FollowPath,
+			Grid = ActionButtonIconRowCount,
+			TileHighlight,
+			PathsLayer,
+			Pathing,
+			Play,
+			Stop,
+			Pause,
+			TimeStop = ActionButtonIconRowCount * 2,
+			_1,
+			_2,
+			_3,
+			Save,
+			Load,
+			OK,
+			Cancel,
+			Blank
+		}
+		protected static readonly Dictionary<string, ActionButtonIcon> ActionButtonIcons = new Dictionary<string, ActionButtonIcon>
+		{
+			// Menus
+			{ nameof(Menus.TileInfoMenu.PathsLayerButton), ActionButtonIcon.PathsLayer },
+			{ nameof(Menus.TileInfoMenu.TileHighlightButton), ActionButtonIcon.TileHighlight },
+			{ nameof(Menus.TileInfoMenu.GridViewButton), ActionButtonIcon.Grid },
+			{ nameof(Menus.CharacterListMenu.GoToButton), ActionButtonIcon.View },
+			{ nameof(Menus.CharacterListMenu.ViewSpawnButton), ActionButtonIcon.ViewSpawn },
+			{ nameof(Menus.CharacterListMenu.OpenScheduleButton), ActionButtonIcon.Schedule },
+			{ nameof(Menus.CharacterListMenu.ReturnFromButton), ActionButtonIcon.Return },
+			{ nameof(Menus.MapMenu.WarpHereButton), ActionButtonIcon.Blank },
+			{ nameof(Menus.MapMenu.ViewLocationButton), ActionButtonIcon.View },
+			{ nameof(Menus.MapMenu.ReturnViewLocationButton), ActionButtonIcon.Return },
+			// Modals
+			{ nameof(Modals.LocationSelectModal.GoButton), ActionButtonIcon.OK },
+		};
+
+
+		protected WindowPage(Point position, WindowPage modalParent = null) : base()
+		{
+			IsModal = modalParent != null;
+			if (IsModal)
+			{
+				_parentMenu = modalParent;
+			}
+			else
+			{
+				this.GenerateWindowBar(position);
+			}
 			this.AddActionButtons();
 			this.RealignElements();
 		}
@@ -103,6 +146,8 @@ namespace InteractiveSchedule.Interface
 			UpButton = null;
 			SidebarActionButtons.Clear();
 			FloatingActionButtons.Clear();
+			ModalWindow?.exitThisMenu();
+			ModalWindow = null;
 
 			base.cleanupBeforeExit();
 		}
@@ -147,7 +192,7 @@ namespace InteractiveSchedule.Interface
 				BorderSafeArea.X + BorderSafeArea.Width - sidebarWidth,
 				BorderSafeArea.Y,
 				sidebarWidth,
-				BorderSafeArea.Height - (1 * MenuScale));
+				BorderSafeArea.Height);
 
 			// Page content area
 			// Don't remove padding from bottom/right (ie. width - Padding.X * 2), this is fine for a little leniency with content width.
@@ -189,22 +234,16 @@ namespace InteractiveSchedule.Interface
 					ActionButtonSize.Y * MenuScale);
 			}
 
-			// Floating action buttons
-			foreach (KeyValuePair<ClickableTextureComponent, Point> button in FloatingActionButtons)
-			{
-				button.Key.bounds = new Rectangle(
-					BorderSafeArea.X + button.Value.X,
-					BorderSafeArea.Y + button.Value.Y,
-					button.Key.sourceRect.Width * MenuScale,
-					button.Key.sourceRect.Height * MenuScale);
-			}
+			ModalWindow?.RealignElements();
+
 			this.RealignFloatingButtons();
 		}
 
 		public override void SetDefaults()
 		{
-			BodyTextColour = Game1.textColor;
-			HeadingTextColour = Color.White;
+			base.SetDefaults();
+
+			BorderWidth = 2;
 			PageColour = Color.PeachPuff;
 			SidebarColour = Color.LightSkyBlue;
 			InnerBorderColourSelected = Color.White;
@@ -217,13 +256,30 @@ namespace InteractiveSchedule.Interface
 		/// <param name="position">Screen coordinates to position the window at once created. Will update the position of this window.</param>
 		private void GenerateWindowBar(Point position)
 		{
-			new WindowBar(childMenu: this, position: position);
+			_ = new WindowBar(childMenu: this, position: position);
 		}
 
-		protected ClickableTextureComponent CreateActionButton(string which, Rectangle sourceRect)
+		protected static Rectangle GetSourceAreaForActionButtonIcon(ActionButtonIcon whichIcon)
+		{
+			if (!Enum.IsDefined(enumType: typeof(ActionButtonIcon), value: whichIcon))
+			{
+				throw new IndexOutOfRangeException();
+			}
+
+			Rectangle sourceRect = new Rectangle(
+				((int)whichIcon % ActionButtonIconRowCount) * ActionButtonIconSize.X,
+				ActionButtonIconSourceY + (((int)whichIcon / ActionButtonIconRowCount) * ActionButtonIconSize.Y),
+				ActionButtonIconSize.X,
+				ActionButtonIconSize.Y);
+
+			return sourceRect;
+		}
+
+		protected ClickableTextureComponent CreateActionButton(string which)
 		{
 			string key = "action." + this.GetType().Name.ToLower() + "." + which.ToLower() + ".label";
 			Translation hoverText = ModEntry.Instance.i18n.Get(key);
+			Rectangle sourceRect = GetSourceAreaForActionButtonIcon(whichIcon: ActionButtonIcons[which]);
 			return new ClickableTextureComponent(
 				bounds: Rectangle.Empty,
 				texture: ModEntry.Sprites,
@@ -234,6 +290,15 @@ namespace InteractiveSchedule.Interface
 			};
 		}
 
+		public void CentreInParent()
+		{
+			if (_parentMenu != null)
+			{
+				xPositionOnScreen = _parentMenu.xPositionOnScreen + ((_parentMenu.width - width) / 2);
+				yPositionOnScreen = _parentMenu.yPositionOnScreen + ((_parentMenu.height - height) / 2);
+			}
+		}
+
 		public override bool isWithinBounds(int x, int y)
 		{
 			return ShouldDraw && base.isWithinBounds(x, y);
@@ -242,10 +307,23 @@ namespace InteractiveSchedule.Interface
 		public override void performHoverAction(int x, int y)
 		{
 			base.performHoverAction(x, y);
+			ModalWindow?.performHoverAction(x, y);
 
-			if (IsActionButtonSidebarVisible)
+			if (ShouldDraw && ModalWindow == null)
 			{
-				foreach (ClickableTextureComponent button in SidebarActionButtons)
+				if (IsActionButtonSidebarVisible)
+				{
+					foreach (ClickableTextureComponent button in SidebarActionButtons)
+					{
+						button.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
+						if (button.containsPoint(x, y))
+						{
+							_hoverText = button.hoverText;
+						}
+					}
+				}
+
+				foreach (ClickableTextureComponent button in FloatingActionButtons.Keys)
 				{
 					button.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
 					if (button.containsPoint(x, y))
@@ -253,30 +331,57 @@ namespace InteractiveSchedule.Interface
 						_hoverText = button.hoverText;
 					}
 				}
-			}
 
-			foreach (ClickableTextureComponent button in FloatingActionButtons.Keys)
-			{
-				button.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
-				if (button.containsPoint(x, y))
-				{
-					_hoverText = button.hoverText;
-				}
+				UpButton.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
 			}
-
-			UpButton.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
 		}
 
+		public override void receiveKeyPress(Keys key)
+		{
+			if (!IsSelected || !ShouldDraw)
+				return;
+
+			base.receiveKeyPress(key);
+			ModalWindow?.receiveKeyPress(key);
+
+			// TODO: ModalWindow checks in WindowPage.receiveKeyPress()
+			if (Game1.keyboardDispatcher.Subscriber != null)
+			{
+				return;
+			}
+			if (!IsOnHomePage)
+			{
+				this.ClickUpButton();
+			}
+			/*else if (WindowBar != null)
+			{
+				if (WindowBar.IsFullscreen)
+					WindowBar.IsFullscreen = false;
+				else
+					WindowBar.IsMinimised = true;
+			}*/
+		}
+
+		/// <summary>
+		/// Children should call base method before custom behaviour.
+		/// </summary>
 		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
 			// TODO: FIX: Resolve leftclick occurring for UpButton and then for any elements appearing beneath it
 
 			base.receiveLeftClick(x, y, playSound);
+			ModalWindow?.receiveLeftClick(x, y, playSound);
 
-			if (IsSelected && ShouldDraw && !IsOnHomePage && UpButton.containsPoint(x, y))
+			if (IsSelected && ShouldDraw && ModalWindow == null && !IsOnHomePage && UpButton != null && UpButton.containsPoint(x, y))
 			{
 				this.ClickUpButton();
 			}
+		}
+
+		public override void update(GameTime time)
+		{
+			base.update(time);
+			ModalWindow?.update(time);
 		}
 
 		public int DrawHeading(SpriteBatch b, Vector2 position, string text, bool drawBackground)
@@ -313,12 +418,7 @@ namespace InteractiveSchedule.Interface
 		public int DrawText(SpriteBatch b, Vector2 position, string text)
 		{
 			text = Game1.parseText(text, whichFont: BodyTextFont, width: (int)(ContentSafeArea.Width - (position.X - ContentSafeArea.X)));
-			b.DrawString(
-				spriteFont: BodyTextFont,
-				text: text,
-				position: position,
-				color: BodyTextColour);
-			return (int)BodyTextFont.MeasureString(text).Y + Padding.Y;
+			return base.DrawText(b, position: position, text: text, font: BodyTextFont, colour: BodyTextColour);
 		}
 
 		public void DrawActionButton(SpriteBatch b, ClickableTextureComponent button)
@@ -365,43 +465,40 @@ namespace InteractiveSchedule.Interface
 			}
 		}
 
+		protected void DarkenForModal(SpriteBatch b)
+		{
+			b.Draw(
+				texture: Game1.fadeToBlackRect,
+				destinationRectangle: BorderSafeArea,
+				color: Color.Black * 0.5f);
+		}
+
 		public void DrawWindow(SpriteBatch b)
 		{
+			int lineWidth = BorderWidth / 2 * MenuScale;
+
+			// Window border
+			b.Draw( // outer:
+				texture: Game1.fadeToBlackRect,
+				destinationRectangle: new Rectangle(xPositionOnScreen, yPositionOnScreen - (lineWidth * 2), width, height + (lineWidth * 4)),
+				color: WindowBar.BorderColour);
+			b.Draw( // inner:
+				texture: Game1.fadeToBlackRect,
+				destinationRectangle: new Rectangle(xPositionOnScreen + lineWidth, yPositionOnScreen - lineWidth, width - (lineWidth * 2), height + (lineWidth * 2)),
+				color: IsSelected ? InnerBorderColourSelected : InnerBorderColourDeselected);
+
 			// Background fill colour
 			b.Draw(
 				texture: Game1.fadeToBlackRect,
 				destinationRectangle: BorderSafeArea,
 				color: PageColour);
-
-			// Window border
-			int lineWidth = BorderWidth / 2 * MenuScale;
-			Color colour = WindowBar.BorderColour;
-			// outside:
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen, yPositionOnScreen), length: height, width: lineWidth, isHorizontal: false);
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen, yPositionOnScreen + height), length: width, width: lineWidth, isHorizontal: true);
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen + width - lineWidth, yPositionOnScreen), length: height, width: lineWidth, isHorizontal: false);
-			// recolour outside border to match interface
-			/*
-			b.Draw(
-				texture: Game1.fadeToBlackRect,
-				destinationRectangle: new Rectangle(xPositionOnScreen, yPositionOnScreen, width, height),
-				color: Desktop.Taskbar.InterfaceColour);*/
-
-			colour = IsSelected ? InnerBorderColourSelected : InnerBorderColourDeselected;
-			// inside:
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen + lineWidth, yPositionOnScreen), length: height - lineWidth, width: lineWidth, isHorizontal: false);
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen + lineWidth, yPositionOnScreen + height - lineWidth), length: width - (lineWidth * 2), width: lineWidth, isHorizontal: true);
-			Desktop.DrawLine(b, colour: colour, startPosition: new Point(xPositionOnScreen + width - (lineWidth * 2), yPositionOnScreen), length: height - lineWidth, width: lineWidth, isHorizontal: false);
-
 		}
+
+		public abstract void DrawContent(SpriteBatch b);
 
 		public override void draw(SpriteBatch b)
 		{
-			if (WindowBar != null)
-			{
-				WindowBar.draw(b);
-			}
-
+			// Draw window
 			if (ShouldDraw)
 			{
 				this.DrawWindow(b);
@@ -411,19 +508,40 @@ namespace InteractiveSchedule.Interface
 				}
 			}
 
-			base.draw(b);
-
-			if (!IsOnHomePage && ShouldDraw)
+			// Draw window bar
+			if (WindowBar != null)
 			{
-				// Up button container
+				WindowBar.draw(b);
+			}
+
+			if (!ShouldDraw)
+				return;
+
+			// Draw custom window content
+			this.DrawContent(b);
+
+			// Draw up button
+			if (ShouldDraw && IsUpButtonVisible && ModalWindow == null)
+			{
+				// container
 				UpButton.draw(b, c: Desktop.Taskbar.InterfaceColour, layerDepth: 1f);
-				// Up button icon
+				// icon
 				b.Draw(
 					texture: ModEntry.Sprites,
 					destinationRectangle: UpButton.bounds,
 					sourceRectangle: UpButtonIconSource,
 					color: Color.White);
 			}
+
+			if (ModalWindow != null)
+			{
+				this.DarkenForModal(b);
+				ModalWindow.draw(b);
+			}
+
+			this.DrawFloatingActionButtons(b);
+
+			base.draw(b); // Hover text
 		}
 	}
 }

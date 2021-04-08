@@ -1,0 +1,2004 @@
+{
+  "LineSpacing": 26,
+  "Spacing": 0,
+  "DefaultCharacter": "~",
+  "Glyphs":
+  {
+    // Space
+    " ":
+    {
+      "BoundsInTexture": "{X:20 Y:0 Width:1 Height:1}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Arabic numerals
+    "0":
+    {
+      "BoundsInTexture": "{X:24 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "1":
+    {
+      "BoundsInTexture": "{X:36 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "2":
+    {
+      "BoundsInTexture": "{X:48 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "3":
+    {
+      "BoundsInTexture": "{X:60 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "4":
+    {
+      "BoundsInTexture": "{X:72 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "5":
+    {
+      "BoundsInTexture": "{X:84 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "6":
+    {
+      "BoundsInTexture": "{X:96 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "7":
+    {
+      "BoundsInTexture": "{X:108 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "8":
+    {
+      "BoundsInTexture": "{X:120 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "9":
+    {
+      "BoundsInTexture": "{X:132 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Latin alphabet
+    "a":
+    {
+      "BoundsInTexture": "{X:0 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "b":
+    {
+      "BoundsInTexture": "{X:12 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "c":
+    {
+      "BoundsInTexture": "{X:24 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "d":
+    {
+      "BoundsInTexture": "{X:36 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "e":
+    {
+      "BoundsInTexture": "{X:48 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "f":
+    {
+      "BoundsInTexture": "{X:60 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "g":
+    {
+      "BoundsInTexture": "{X:72 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "h":
+    {
+      "BoundsInTexture": "{X:84 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "i":
+    {
+      "BoundsInTexture": "{X:96 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "j":
+    {
+      "BoundsInTexture": "{X:108 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "k":
+    {
+      "BoundsInTexture": "{X:120 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "l":
+    {
+      "BoundsInTexture": "{X:132 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "m":
+    {
+      "BoundsInTexture": "{X:144 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "n":
+    {
+      "BoundsInTexture": "{X:0 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "o":
+    {
+      "BoundsInTexture": "{X:12 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "p":
+    {
+      "BoundsInTexture": "{X:24 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "q":
+    {
+      "BoundsInTexture": "{X:36 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "r":
+    {
+      "BoundsInTexture": "{X:48 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "s":
+    {
+      "BoundsInTexture": "{X:60 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "t":
+    {
+      "BoundsInTexture": "{X:72 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "u":
+    {
+      "BoundsInTexture": "{X:84 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "v":
+    {
+      "BoundsInTexture": "{X:96 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "w":
+    {
+      "BoundsInTexture": "{X:108 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "x":
+    {
+      "BoundsInTexture": "{X:120 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "y":
+    {
+      "BoundsInTexture": "{X:132 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "z":
+    {
+      "BoundsInTexture": "{X:144 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "A":
+    {
+      "BoundsInTexture": "{X:0 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "B":
+    {
+      "BoundsInTexture": "{X:12 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "C":
+    {
+      "BoundsInTexture": "{X:24 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "D":
+    {
+      "BoundsInTexture": "{X:36 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "E":
+    {
+      "BoundsInTexture": "{X:48 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "F":
+    {
+      "BoundsInTexture": "{X:60 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "G":
+    {
+      "BoundsInTexture": "{X:72 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "H":
+    {
+      "BoundsInTexture": "{X:84 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "I":
+    {
+      "BoundsInTexture": "{X:96 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "J":
+    {
+      "BoundsInTexture": "{X:108 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "K":
+    {
+      "BoundsInTexture": "{X:120 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "L":
+    {
+      "BoundsInTexture": "{X:132 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "M":
+    {
+      "BoundsInTexture": "{X:144 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "N":
+    {
+      "BoundsInTexture": "{X:0 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "O":
+    {
+      "BoundsInTexture": "{X:12 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "P":
+    {
+      "BoundsInTexture": "{X:24 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Q":
+    {
+      "BoundsInTexture": "{X:36 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "R":
+    {
+      "BoundsInTexture": "{X:48 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "S":
+    {
+      "BoundsInTexture": "{X:60 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "T":
+    {
+      "BoundsInTexture": "{X:72 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "U":
+    {
+      "BoundsInTexture": "{X:84 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "V":
+    {
+      "BoundsInTexture": "{X:96 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "W":
+    {
+      "BoundsInTexture": "{X:108 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "X":
+    {
+      "BoundsInTexture": "{X:120 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Y":
+    {
+      "BoundsInTexture": "{X:132 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Z":
+    {
+      "BoundsInTexture": "{X:144 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Common symbols
+    "-":
+    {
+      "BoundsInTexture": "{X:144 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "_":
+    {
+      "BoundsInTexture": "{X:156 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "=":
+    {
+      "BoundsInTexture": "{X:168 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "+":
+    {
+      "BoundsInTexture": "{X:180 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "/":
+    {
+      "BoundsInTexture": "{X:192 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "\\":
+    {
+      "BoundsInTexture": "{X:204 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "*":
+    {
+      "BoundsInTexture": "{X:216 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "~":
+    {
+      "BoundsInTexture": "{X:228 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "`":
+    {
+      "BoundsInTexture": "{X:240 Y:0 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "(":
+    {
+      "BoundsInTexture": "{X:156 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ")":
+    {
+      "BoundsInTexture": "{X:168 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "[":
+    {
+      "BoundsInTexture": "{X:180 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "]":
+    {
+      "BoundsInTexture": "{X:192 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "{":
+    {
+      "BoundsInTexture": "{X:204 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "}":
+    {
+      "BoundsInTexture": "{X:216 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "<":
+    {
+      "BoundsInTexture": "{X:228 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ">":
+    {
+      "BoundsInTexture": "{X:240 Y:20 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ":":
+    {
+      "BoundsInTexture": "{X:156 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ";":
+    {
+      "BoundsInTexture": "{X:168 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "!":
+    {
+      "BoundsInTexture": "{X:180 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "?":
+    {
+      "BoundsInTexture": "{X:192 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¿":
+    {
+      "BoundsInTexture": "{X:204 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¡":
+    {
+      "BoundsInTexture": "{X:216 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¤":
+    {
+      "BoundsInTexture": "{X:228 Y:40 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "#":
+    {
+      "BoundsInTexture": "{X:156 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "$":
+    {
+      "BoundsInTexture": "{X:168 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "&":
+    {
+      "BoundsInTexture": "{X:180 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "@":
+    {
+      "BoundsInTexture": "{X:192 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "%":
+    {
+      "BoundsInTexture": "{X:204 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "^":
+    {
+      "BoundsInTexture": "{X:216 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "«":
+    {
+      "BoundsInTexture": "{X:228 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "»":
+    {
+      "BoundsInTexture": "{X:240 Y:60 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "\"":
+    {
+      "BoundsInTexture": "{X:156 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "'":
+    {
+      "BoundsInTexture": "{X:168 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ".":
+    {
+      "BoundsInTexture": "{X:180 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    ",":
+    {
+      "BoundsInTexture": "{X:192 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Irregular and extended symbols
+    "¹":
+    {
+      "BoundsInTexture": "{X:204 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "²":
+    {
+      "BoundsInTexture": "{X:216 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "³":
+    {
+      "BoundsInTexture": "{X:228 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "€":
+    {
+      "BoundsInTexture": "{X:240 Y:80 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¼":
+    {
+      "BoundsInTexture": "{X:156 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "½":
+    {
+      "BoundsInTexture": "{X:168 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¾":
+    {
+      "BoundsInTexture": "{X:180 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¥":
+    {
+      "BoundsInTexture": "{X:192 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "£":
+    {
+      "BoundsInTexture": "{X:204 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¢":
+    {
+      "BoundsInTexture": "{X:216 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "×":
+    {
+      "BoundsInTexture": "{X:228 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "÷":
+    {
+      "BoundsInTexture": "{X:240 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "|":
+    {
+      "BoundsInTexture": "{X:156 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¦":
+    {
+      "BoundsInTexture": "{X:168 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¬":
+    {
+      "BoundsInTexture": "{X:180 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¨":
+    {
+      "BoundsInTexture": "{X:192 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "°":
+    {
+      "BoundsInTexture": "{X:204 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "¶":
+    {
+      "BoundsInTexture": "{X:216 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "´":
+    {
+      "BoundsInTexture": "{X:228 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‸":
+    {
+      "BoundsInTexture": "{X:240 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "—":
+    {
+      "BoundsInTexture": "{X:156 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "―":
+    {
+      "BoundsInTexture": "{X:168 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "♡":
+    {
+      "BoundsInTexture": "{X:180 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‹":
+    {
+      "BoundsInTexture": "{X:192 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "›":
+    {
+      "BoundsInTexture": "{X:204 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "§":
+    {
+      "BoundsInTexture": "{X:216 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "©":
+    {
+      "BoundsInTexture": "{X:228 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "®":
+    {
+      "BoundsInTexture": "{X:240 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‧":
+    {
+      "BoundsInTexture": "{X:156 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "•":
+    {
+      "BoundsInTexture": "{X:168 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‣":
+    {
+      "BoundsInTexture": "{X:180 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "·":
+    {
+      "BoundsInTexture": "{X:192 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "±":
+    {
+      "BoundsInTexture": "{X:204 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‰":
+    {
+      "BoundsInTexture": "{X:216 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‱":
+    {
+      "BoundsInTexture": "{X:228 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "º":
+    {
+      "BoundsInTexture": "{X:240 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ß":
+    {
+      "BoundsInTexture": "{X:156 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "µ":
+    {
+      "BoundsInTexture": "{X:168 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ç":
+    {
+      "BoundsInTexture": "{X:180 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "․":
+    {
+      "BoundsInTexture": "{X:192 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "‥":
+    {
+      "BoundsInTexture": "{X:204 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "…":
+    {
+      "BoundsInTexture": "{X:216 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "À":
+    {
+      "BoundsInTexture": "{X:0 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Á":
+    {
+      "BoundsInTexture": "{X:12 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Â":
+    {
+      "BoundsInTexture": "{X:24 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ã":
+    {
+      "BoundsInTexture": "{X:36 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ä":
+    {
+      "BoundsInTexture": "{X:48 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Å":
+    {
+      "BoundsInTexture": "{X:60 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "È":
+    {
+      "BoundsInTexture": "{X:72 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "É":
+    {
+      "BoundsInTexture": "{X:84 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ê":
+    {
+      "BoundsInTexture": "{X:96 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ë":
+    {
+      "BoundsInTexture": "{X:108 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ñ":
+    {
+      "BoundsInTexture": "{X:120 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ý":
+    {
+      "BoundsInTexture": "{X:132 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ÿ":
+    {
+      "BoundsInTexture": "{X:144 Y:100 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ì":
+    {
+      "BoundsInTexture": "{X:0 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Í":
+    {
+      "BoundsInTexture": "{X:12 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Î":
+    {
+      "BoundsInTexture": "{X:24 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ï":
+    {
+      "BoundsInTexture": "{X:36 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ò":
+    {
+      "BoundsInTexture": "{X:48 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ó":
+    {
+      "BoundsInTexture": "{X:60 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ô":
+    {
+      "BoundsInTexture": "{X:72 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Õ":
+    {
+      "BoundsInTexture": "{X:84 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ö":
+    {
+      "BoundsInTexture": "{X:96 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ø":
+    {
+      "BoundsInTexture": "{X:108 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ð":
+    {
+      "BoundsInTexture": "{X:120 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Þ":
+    {
+      "BoundsInTexture": "{X:132 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Æ":
+    {
+      "BoundsInTexture": "{X:144 Y:120 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ù":
+    {
+      "BoundsInTexture": "{X:0 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ú":
+    {
+      "BoundsInTexture": "{X:12 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Û":
+    {
+      "BoundsInTexture": "{X:24 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ü":
+    {
+      "BoundsInTexture": "{X:36 Y:140 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "à":
+    {
+      "BoundsInTexture": "{X:0 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "á":
+    {
+      "BoundsInTexture": "{X:12 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "â":
+    {
+      "BoundsInTexture": "{X:24 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ã":
+    {
+      "BoundsInTexture": "{X:36 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "å":
+    {
+      "BoundsInTexture": "{X:48 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ä":
+    {
+      "BoundsInTexture": "{X:60 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "è":
+    {
+      "BoundsInTexture": "{X:72 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "é":
+    {
+      "BoundsInTexture": "{X:84 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ê":
+    {
+      "BoundsInTexture": "{X:96 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ë":
+    {
+      "BoundsInTexture": "{X:108 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ñ":
+    {
+      "BoundsInTexture": "{X:120 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ý":
+    {
+      "BoundsInTexture": "{X:132 Y:160 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ÿ":
+    {
+      "BoundsInTexture": "{X:144 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ì":
+    {
+      "BoundsInTexture": "{X:12 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "í":
+    {
+      "BoundsInTexture": "{X:12 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "î":
+    {
+      "BoundsInTexture": "{X:24 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ï":
+    {
+      "BoundsInTexture": "{X:36 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ò":
+    {
+      "BoundsInTexture": "{X:48 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ó":
+    {
+      "BoundsInTexture": "{X:60 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ô":
+    {
+      "BoundsInTexture": "{X:72 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "õ":
+    {
+      "BoundsInTexture": "{X:84 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ö":
+    {
+      "BoundsInTexture": "{X:96 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ø":
+    {
+      "BoundsInTexture": "{X:108 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ð":
+    {
+      "BoundsInTexture": "{X:120 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "þ":
+    {
+      "BoundsInTexture": "{X:132 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "æ":
+    {
+      "BoundsInTexture": "{X:144 Y:180 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ù":
+    {
+      "BoundsInTexture": "{X:0 Y:200 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ú":
+    {
+      "BoundsInTexture": "{X:12 Y:200 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "û":
+    {
+      "BoundsInTexture": "{X:24 Y:200 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ü":
+    {
+      "BoundsInTexture": "{X:32 Y:200 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Polish alphabet
+    "Ą":
+    {
+      "BoundsInTexture": "{X:0 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ą":
+    {
+      "BoundsInTexture": "{X:12 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ć":
+    {
+      "BoundsInTexture": "{X:24 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ć":
+    {
+      "BoundsInTexture": "{X:36 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ę":
+    {
+      "BoundsInTexture": "{X:48 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ę":
+    {
+      "BoundsInTexture": "{X:60 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ł":
+    {
+      "BoundsInTexture": "{X:72 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ł":
+    {
+      "BoundsInTexture": "{X:84 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ń":
+    {
+      "BoundsInTexture": "{X:96 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ń":
+    {
+      "BoundsInTexture": "{X:108 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ś":
+    {
+      "BoundsInTexture": "{X:120 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ś":
+    {
+      "BoundsInTexture": "{X:132 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ź":
+    {
+      "BoundsInTexture": "{X:144 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ź":
+    {
+      "BoundsInTexture": "{X:156 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ż":
+    {
+      "BoundsInTexture": "{X:168 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ż":
+    {
+      "BoundsInTexture": "{X:180 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    // Turkish alphabetic
+    "İ":
+    {
+      "BoundsInTexture": "{X:192 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ı":
+    {
+      "BoundsInTexture": "{X:204 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "Ы":
+    {
+      "BoundsInTexture": "{X:216 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    },
+    "ы":
+    {
+      "BoundsInTexture": "{X:228 Y:220 Width:12 Height:20}",
+      "Cropping": "{X:0 Y:0 Width:12 Height:26}",
+      "LeftSideBearing": 0.0,
+      "Width": 12.0,
+      "RightSideBearing": 0.0,
+      "WidthIncludingBearings": 12.0
+    }
+  }
+}

@@ -7,30 +7,33 @@ using StardewModdingAPI;
 using StardewValley.Locations;
 using Microsoft.Xna.Framework.Graphics;
 using StardewValley.Menus;
-using StardewModdingAPI.Utilities;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Menus
 {
-	public class MapViewMenu : WindowPage
+	public class MapMenu : WindowPage
 	{
-		public ClickableTextureComponent ViewLocationButton;
-		public ClickableTextureComponent ReturnViewLocationButton;
+		public ClickableTextureComponent ReturnViewLocationButton, ViewLocationButton, WarpHereButton;
 		public Dictionary<string, string> LocationStrings = new Dictionary<string, string>();
 		public Dictionary<string, Rectangle> LocationRegions = new Dictionary<string, Rectangle>();
 		public readonly List<ClickableComponent> MapLocations = new List<ClickableComponent>();
 		public override bool IsOnHomePage => true;
+		public override bool IsUpButtonVisible => !IsOnHomePage;
 		public override bool IsActionButtonSidebarVisible => false;
 
+		private GameLocation _lastHoveredLocation;
+		private Vector2 _mapOrigin;
 		private readonly Texture2D _map;
 		private static readonly Rectangle MapSource = new Rectangle(0, 0, 300, 180);
 
-		public MapViewMenu(Point position) : base(position)
+		public MapMenu(Point position)
+			: base(position: position)
 		{
-			_map = Game1.content.Load<Texture2D>(PathUtilities.NormalizePath("LooseSprites\\map"));
+			_map = Game1.content.Load<Texture2D>("LooseSprites\\map");
 		}
 
 		protected override void cleanupBeforeExit()
 		{
+			_lastHoveredLocation = null;
 			ViewLocationButton = null;
 			MapLocations.Clear();
 			LocationStrings.Clear();
@@ -43,10 +46,15 @@ namespace InteractiveSchedule.Interface
 		{
 			base.RealignElements();
 
-			if (_parentMenu != null && _map != null)
+			if (WindowBar != null && _map != null)
 			{
-				_parentMenu.width = width = Math.Max(_parentMenu.width, (MapSource.Width + 4) * MenuScale);
-				height = (MapSource.Height + 1) * MenuScale;
+				WindowBar.width = width = Math.Max(WindowBar.width, (MapSource.Width + 4) * MenuScale);
+				height = WindowBar.IsFullscreen
+					? WindowBar.FullscreenHeight
+					: MapSource.Height * MenuScale;
+				_mapOrigin = new Vector2(
+					Math.Max(BorderSafeArea.X, (width - (MapSource.Width * MenuScale)) / 2),
+					Math.Max(BorderSafeArea.Y, (height - (MapSource.Height * MenuScale)) / 2));
 			}
 
 			this.AddMapPoints();
@@ -56,12 +64,9 @@ namespace InteractiveSchedule.Interface
 		{
 			base.AddActionButtons();
 
-			// TODO: FIX: Floating action buttons are given bounds when height is 0, so fail to position relative to window size.
-			Rectangle sourceRect = new Rectangle(ActionButtonIconSize.X * 4, ActionButtonIconOffsetY, ActionButtonIconSize.X, ActionButtonIconSize.Y);
-			ViewLocationButton = this.CreateActionButton(which: nameof(ViewLocationButton), sourceRect: sourceRect);
-
-			sourceRect.X += sourceRect.Width;
-			ReturnViewLocationButton = this.CreateActionButton(which: nameof(ReturnViewLocationButton), sourceRect: sourceRect);
+			WarpHereButton = this.CreateActionButton(which: nameof(WarpHereButton));
+			ViewLocationButton = this.CreateActionButton(which: nameof(ViewLocationButton));
+			ReturnViewLocationButton = this.CreateActionButton(which: nameof(ReturnViewLocationButton));
 		}
 
 		public override void RealignFloatingButtons()
@@ -75,6 +80,9 @@ namespace InteractiveSchedule.Interface
 				FloatingActionButtons[ViewLocationButton] = new Point(
 					FloatingActionButtons[ReturnViewLocationButton].X,
 					FloatingActionButtons[ReturnViewLocationButton].Y - yOffset);
+				FloatingActionButtons[WarpHereButton] = new Point(
+					FloatingActionButtons[ViewLocationButton].X,
+					FloatingActionButtons[ViewLocationButton].Y - yOffset);
 			}
 
 			base.RealignFloatingButtons();
@@ -117,7 +125,6 @@ namespace InteractiveSchedule.Interface
 				{ "Tent", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11097") },
 				{ "Mine", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11098") },
 				{ "AdventureGuild", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11099") },
-				{ "Quarry", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11103") },
 				{ "FishShop", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11107") },
 				{ "BathHouseEntry", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11110") },
 				{ "Woods", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11114") },
@@ -160,7 +167,6 @@ namespace InteractiveSchedule.Interface
 				{ "Trailer", new Rectangle(195, 90, 7, 5) },
 				{ "JojaMart", new Rectangle(218, 70, 13, 13) },
 				{ "CommunityCenter", new Rectangle(173, 51, 11, 9) },
-				{ "Quarry", new Rectangle(242, 29, 22, 19) },
 				{ "Railroad", new Rectangle(136, 6, 56, 20) },
 				{ "Woods", new Rectangle(0, 68, 49, 44) },
 				{ "Forest", new Rectangle(58, 94, 48, 54) },
@@ -203,8 +209,9 @@ namespace InteractiveSchedule.Interface
 			foreach (string key in LocationRegions.Keys)
 			{
 				MapLocations.Add(new ClickableComponent(
-					bounds: new Rectangle(BorderSafeArea.X + LocationRegions[key].X,
-						BorderSafeArea.Y + LocationRegions[key].Y,
+					bounds: new Rectangle(
+						(int)_mapOrigin.X + LocationRegions[key].X,
+						(int)_mapOrigin.Y + LocationRegions[key].Y,
 						LocationRegions[key].Width,
 						LocationRegions[key].Height),
 					name: key));
@@ -215,14 +222,26 @@ namespace InteractiveSchedule.Interface
 		{
 			base.receiveLeftClick(x, y, playSound);
 
-			if (!IsSelected || !ShouldDraw)
+			if (!IsSelected || !ShouldDraw || ModalWindow != null)
 				return;
 
 			if (FloatingActionButtons.Any())
 			{
+				if (WarpHereButton.containsPoint(x, y))
+				{
+					if (string.IsNullOrEmpty(Game1.player.viewingLocation.Value)
+						|| (Game1.currentLocation != null && Game1.player.viewingLocation.Value == Game1.player.currentLocation.Name))
+					{
+						Desktop.PlaySound("cancel");
+					}
+					else
+					{
+						Desktop.WarpFarmerTo(Game1.player.viewingLocation.Value);
+					}
+				}
 				if (ViewLocationButton.containsPoint(x, y))
 				{
-					// TODO: MapViewMenu.ViewLocationButton
+					ModalWindow = new Modals.LocationSelectModal(position: new Point(25 * MenuScale, 5 * MenuScale), parent: this);
 				}
 				if (ReturnViewLocationButton.containsPoint(x, y))
 				{
@@ -230,15 +249,12 @@ namespace InteractiveSchedule.Interface
 				}
 			}
 
-			foreach (ClickableComponent point in MapLocations.ToList())
+			if (MapLocations.Any(point => point.containsPoint(x, y)) && _lastHoveredLocation != null)
 			{
-				if (point.containsPoint(x, y))
-				{
-					// Clicking on map regions will cast the view to that location
-					int warpX = 0, warpY = 0;
-					Utility.getDefaultWarpLocation(point.name, ref warpX, ref warpY);
-					Desktop.ViewLocation(point.name, new Point(warpX, warpY));
-				}
+				// Clicking on map regions will cast the view to that location
+				int warpX = 0, warpY = 0;
+				Utility.getDefaultWarpLocation(location_name: _lastHoveredLocation.Name, x: ref warpX, y: ref warpY);
+				Desktop.ViewLocation(locationName: _lastHoveredLocation.Name, tilePosition: new Point(warpX, warpY), notify: true);
 			}
 		}
 
@@ -248,14 +264,18 @@ namespace InteractiveSchedule.Interface
 
 			base.performHoverAction(x, y);
 
-			if (!IsSelected || !ShouldDraw)
+			if (!ShouldUpdateHoverText || ModalWindow != null)
 				return;
 
 			foreach (ClickableComponent point in MapLocations)
 			{
 				if (point.containsPoint(x, y))
 				{
-					_hoverText = LocationStrings[point.name] + "\n\n>>  Maps/" + point.name;
+					if (_lastHoveredLocation == null || _lastHoveredLocation.Name != point.name)
+					{
+						_lastHoveredLocation = Game1.getLocationFromName(point.name);
+					}
+					_hoverText = LocationStrings[point.name] + "\n\n>  " + (_lastHoveredLocation == null ? "???" : _lastHoveredLocation.mapPath.Value);
 					return;
 				}
 			}
@@ -273,7 +293,7 @@ namespace InteractiveSchedule.Interface
 		{
 			b.Draw(
 				texture: _map,
-				position: new Vector2(BorderSafeArea.X, BorderSafeArea.Y),
+				position: _mapOrigin,
 				sourceRectangle: MapSource,
 				color: Color.White,
 				rotation: 0f,
@@ -283,17 +303,14 @@ namespace InteractiveSchedule.Interface
 				layerDepth: 0.86f);
 		}
 
+		public override void DrawContent(SpriteBatch b)
+		{
+			this.DrawMap(b);
+		}
+
 		public override void draw(SpriteBatch b)
 		{
 			base.draw(b);
-
-			if (!ShouldDraw)
-				return;
-
-			this.DrawMap(b);
-
-			this.DrawFloatingActionButtons(b);
-			this.DrawHoverText(b);
 		}
 	}
 }

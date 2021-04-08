@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Components
 {
 	/// <summary>
 	/// Root class for <see cref="WindowBar"/> and <see cref="WindowPage"/>.
@@ -17,6 +17,7 @@ namespace InteractiveSchedule.Interface
 		public Desktop Desktop => ModEntry.Instance.Desktop;
 		public abstract bool IsSelected { get; }
 
+
 		protected WindowComponent() : base() {}
 
 		public override void RealignElements()
@@ -25,7 +26,16 @@ namespace InteractiveSchedule.Interface
 				return;
 
 			xPositionOnScreen = _parentMenu.xPositionOnScreen;
-			yPositionOnScreen = _parentMenu.yPositionOnScreen + _parentMenu.height;
+			yPositionOnScreen = _parentMenu.yPositionOnScreen;
+			if (_parentMenu is WindowBar windowBar)
+				yPositionOnScreen += windowBar.height;
+			else if (this is WindowPage windowPage && _parentMenu != null)
+				windowPage.CentreInParent();
+	}
+
+		public override void SetDefaults()
+		{
+			base.SetDefaults();
 		}
 
 		protected override void cleanupBeforeExit()

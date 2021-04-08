@@ -17,10 +17,30 @@ namespace InteractiveSchedule.Interface
 		/// </summary>
 		public const int MenuScale = 3;
 
-		protected const float ShadowOpacity = 0.5f;
-		protected static readonly Color ShadowColour = Color.MidnightBlue;
-		protected static float HoverDelayScale = 1f;
-		protected static float LeftClickHeldDelayScale = 1f;
+		public int BorderWidth { get; protected set; }
+		/// <summary>
+		/// The area of the page, after considering <see cref="BorderWidth"/>, to place content/multimedia.
+		/// Designed for media spanning the whole width of the page, ignoring padding and sidebars.
+		/// </summary>
+		public Rectangle BorderSafeArea { get; protected set; }
+		/// <summary>
+		/// The area of the page, after considering <see cref="BorderWidth"/>, <see cref="Padding"/>, and <see cref="ActionButtonSidebarArea"/>, to place content/multimedia.
+		/// Designed for common spaced page elements such as text and images.
+		/// </summary>
+		public Rectangle ContentSafeArea { get; protected set; }
+		protected static float ShadowOpacity;
+		protected static Color ShadowColour;
+		protected static Color BodyTextColour;
+		protected static Color HeadingTextColour;
+		protected static SpriteFont HeadingTextFont => Game1.dialogueFont;
+		protected static SpriteFont BodyTextFont => Game1.smallFont;
+
+		protected static float HoverDelayScale;
+		protected static float LeftClickHeldDelayScale;
+		protected static float RightClickHeldDelayScale;
+		protected static float LeftClickHoldDelay;
+		protected static float RightClickHoldDelay;
+
 		protected float _leftClickHeldTimer;
 		protected float _hoverTimer;
 		protected string _hoverText;
@@ -38,11 +58,25 @@ namespace InteractiveSchedule.Interface
 		/// </summary>
 		protected static readonly List<string> IconSourceIndex = new List<string>
 		{
-			nameof(ModInfoMenu), nameof(CharacterListMenu), "ScheduleMenu", "GiftsMenu", "DialogueMenu",
-			"FileManagerMenu", "BuildMenu", nameof(TileInfoMenu), nameof(MapViewMenu), "OptionsMenu", "HelpMenu"
+			nameof(Menus.ModInfoMenu), nameof(Menus.CharacterListMenu), nameof(Menus.SchedulePreviewMenu),
+			"GiftsMenu", "DialogueMenu", "FileManagerMenu", "BuildMenu",
+			nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu), "OptionsMenu", "HelpMenu"
 		};
 
-		public abstract void SetDefaults();
+		public virtual void SetDefaults()
+		{
+			ShadowOpacity = 0.5f;
+			ShadowColour = Color.MidnightBlue;
+			BodyTextColour = Game1.textColor;
+			HeadingTextColour = Color.White;
+
+			LeftClickHeldDelayScale = 1f;
+			RightClickHeldDelayScale = 1f;
+			HoverDelayScale = 1f;
+			LeftClickHoldDelay = 10f;
+			RightClickHoldDelay = 2f;
+		}
+
 		public abstract void RealignElements();
 
 		protected CustomMenu()
@@ -71,6 +105,16 @@ namespace InteractiveSchedule.Interface
 				color: Color.White * 0.3f);
 		}
 
+		public virtual int DrawText(SpriteBatch b, Vector2 position, string text, SpriteFont font, Color colour)
+		{
+			b.DrawString(
+				spriteFont: font,
+				text: text,
+				position: position,
+				color: colour);
+			return (int)font.MeasureString(text).Y + Padding.Y;
+		}
+
 		/// <summary>
 		/// Common method for calling existing <see cref="IClickableMenu.drawHoverText"/> method.
 		/// </summary>
@@ -91,49 +135,64 @@ namespace InteractiveSchedule.Interface
 		public override void update(GameTime time)
 		{
 			base.update(time);
-			_parentMenu?.update(time);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.update(time);
 		}
 
 		public override void receiveKeyPress(Keys key)
 		{
 			base.receiveKeyPress(key);
-			_parentMenu?.receiveKeyPress(key);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.receiveKeyPress(key);
 		}
 
 		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
 			base.receiveLeftClick(x, y, playSound);
-			_parentMenu?.receiveLeftClick(x, y, playSound);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.receiveLeftClick(x, y, playSound);
 		}
 
 		public override void receiveRightClick(int x, int y, bool playSound = true)
 		{
 			base.receiveRightClick(x, y, playSound);
-			_parentMenu?.receiveRightClick(x, y, playSound);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.receiveRightClick(x, y, playSound);
 		}
 
 		public override void leftClickHeld(int x, int y)
 		{
 			base.leftClickHeld(x, y);
-			_parentMenu?.leftClickHeld(x, y);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.leftClickHeld(x, y);
 		}
 
 		public override void releaseLeftClick(int x, int y)
 		{
 			base.releaseLeftClick(x, y);
-			_parentMenu?.releaseLeftClick(x, y);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.releaseLeftClick(x, y);
 		}
 
 		public override void receiveScrollWheelAction(int direction)
 		{
 			base.receiveScrollWheelAction(direction);
-			_parentMenu?.receiveScrollWheelAction(direction);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.receiveScrollWheelAction(direction);
 		}
 
 		public override void performHoverAction(int x, int y)
 		{
 			base.performHoverAction(x, y);
-			_parentMenu?.performHoverAction(x, y);
+			if (_parentMenu is WindowBar)
+				_parentMenu?.performHoverAction(x, y);
 		}
+
+		// NO snapping
+		public override void automaticSnapBehavior(int direction, int oldRegion, int oldID) {}
+		protected override void customSnapBehavior(int direction, int oldRegion, int oldID) {}
+		public override void setCurrentlySnappedComponentTo(int id) {}
+		public override void snapToDefaultClickableComponent() {}
+		public override void snapCursorToCurrentSnappedComponent() {}
 	}
 }

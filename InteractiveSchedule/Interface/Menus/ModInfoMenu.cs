@@ -6,18 +6,20 @@ using System.Collections.Generic;
 using System.Linq;
 using StardewModdingAPI;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Menus
 {
 	public class ModInfoMenu : WindowPage
 	{
 		private string _headerText;
 		private string _subheaderText;
 		private string _bodyText;
+		private string _creditText;
 
 		public override bool IsOnHomePage => true;
+		public override bool IsUpButtonVisible => false;
 		public override bool IsActionButtonSidebarVisible => false;
 
-		public ModInfoMenu(Point position) : base(position)
+		public ModInfoMenu(Point position) : base(position: position)
 		{
 			this.RealignElements();
 		}
@@ -35,6 +37,7 @@ namespace InteractiveSchedule.Interface
 			_headerText = manifest.Name + " " + manifest.Version;
 			_subheaderText = manifest.Description;
 			_bodyText = ModEntry.Instance.i18n.Get("ui.modinfo.body");
+			_creditText = ModEntry.Instance.i18n.Get("ui.modinfo.credit");
 		}
 
 		public override void RealignElements()
@@ -44,8 +47,10 @@ namespace InteractiveSchedule.Interface
 			if (WindowBar != null)
 			{
 				width = WindowBar.width;
+				height = WindowBar.IsFullscreen
+					? WindowBar.FullscreenHeight
+					: 80 * MenuScale;
 			}
-			height = WindowBar != null && WindowBar.IsFullscreen ? Game1.viewport.Height - WindowBar.height : 64 * MenuScale;
 		}
 
 		public override void RealignFloatingButtons()
@@ -58,13 +63,13 @@ namespace InteractiveSchedule.Interface
 			throw new NotImplementedException();
 		}
 
-		public override void draw(SpriteBatch b)
+		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
-			base.draw(b);
+			base.receiveLeftClick(x, y, playSound);
+		}
 
-			if (!ShouldDraw)
-				return;
-
+		public override void DrawContent(SpriteBatch b)
+		{
 			Rectangle avatarSource = Desktop.Taskbar.AvatarButton.sourceRect;
 			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
 			string text;
@@ -86,8 +91,21 @@ namespace InteractiveSchedule.Interface
 			text = Game1.parseText(text: _bodyText, whichFont: BodyTextFont, width: textWidth);
 			position.Y += this.DrawText(b, position: position, text: text);
 
-			this.DrawFloatingActionButtons(b);
-			this.DrawHoverText(b);
+			// Blueberry credit
+			b.Draw(
+				texture: Game1.objectSpriteSheet,
+				position: position,
+				sourceRectangle: Game1.getSourceRectForStandardTileSheet(tileSheet: Game1.objectSpriteSheet, tilePosition: 258, width: 16, height: 16),
+				color: Color.White, rotation: 0f, origin: Vector2.Zero, scale: MenuScale, effects: SpriteEffects.None, layerDepth: 1f);
+			position.X += (16 * MenuScale) + Padding.X;
+			text = Game1.parseText(text: _creditText, whichFont: BodyTextFont, width: textWidth);
+			position.Y += (16 * MenuScale) / 4;
+			this.DrawText(b, position: position, text: text);
+		}
+
+		public override void draw(SpriteBatch b)
+		{
+			base.draw(b);
 		}
 	}
 }

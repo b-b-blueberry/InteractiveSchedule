@@ -6,20 +6,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Menus
 {
 	public class CharacterListMenu : WindowPage
 	{
+		public ClickableTextureComponent ReturnFromButton, GoToButton, OpenScheduleButton, ViewSpawnButton;
+
+		/// <summary> List of names for each <see cref="StardewValley.NPC"/> loaded in the NPCDispositions data file, paired with their display names.</summary>
 		public Dictionary<string, string> Names = new Dictionary<string, string>();
+		/// <summary> Clickable mugshot icons for each <see cref="StardewValley.NPC"/> appearing in <see cref="Names"/>.</summary>
 		public List<ClickableTextureComponent> Heads = new List<ClickableTextureComponent>();
 
 		public override bool IsOnHomePage => SelectedChara == null;
+		public override bool IsUpButtonVisible => !IsOnHomePage;
 		public override bool IsActionButtonSidebarVisible => !IsOnHomePage;
 
+		/// <summary> Currently selected <see cref="StardewValley.NPC"/>, determines the sub-page contents.</summary>
 		public NPC SelectedChara;
-		public ClickableTextureComponent GoToButton, OpenScheduleButton;
 
+		/// <summary>  Scale for each clickable icon in <see cref="Heads"/>. </summary>
 		private int _headScale;
+		/// <summary> Number of <see cref="Heads"/> icons in each row to draw to the window.</summary>
 		private int _headsWide;
 
 		public CharacterListMenu(Point position) : base(position: position)
@@ -32,6 +39,7 @@ namespace InteractiveSchedule.Interface
 		{
 			Names.Clear();
 			Heads.Clear();
+			ReturnFromButton = null;
 			GoToButton = null;
 			OpenScheduleButton = null;
 			SelectedChara = null;
@@ -51,21 +59,23 @@ namespace InteractiveSchedule.Interface
 		{
 			base.RealignElements();
 
-			if (_parentMenu != null)
+			if (WindowBar != null)
 			{
 				// Character catalogue
 				Rectangle headSize = Heads.FirstOrDefault()?.sourceRect ?? new Rectangle(0, 0, 16, 24);
 
-				_parentMenu.width = width = Math.Max(_parentMenu.width, (_headsWide * headSize.Width) + (Padding.X * 2) + ActionButtonSidebarArea.Width);
-				height = ((WindowBar)_parentMenu).IsFullscreen
-					? Game1.viewport.Height - _parentMenu.height
+				WindowBar.width = width = Math.Max(WindowBar.width, (_headsWide * headSize.Width) + (Padding.X * 2) + ActionButtonSidebarArea.Width);
+				height = WindowBar.IsFullscreen
+					? WindowBar.FullscreenHeight
 					: (((Heads.Count / _headsWide) + 1) * headSize.Height * _headScale) + (Padding.Y * 2);
+
+				int xToCentre = ((_headsWide * headSize.Width * _headScale) - ContentSafeArea.Width) / 2;
 
 				for (int i = 0; i < Heads.Count; ++i)
 				{
 					int x = i % _headsWide * headSize.Width * _headScale;
 					int y = i / _headsWide * headSize.Height * _headScale;
-					Heads[i].bounds = new Rectangle(ContentSafeArea.X + x, ContentSafeArea.Y + y, headSize.Width * MenuScale, headSize.Height * MenuScale);
+					Heads[i].bounds = new Rectangle(ContentSafeArea.X + xToCentre + x, ContentSafeArea.Y + y, headSize.Width * MenuScale, headSize.Height * MenuScale);
 				}
 			}
 		}
@@ -79,13 +89,12 @@ namespace InteractiveSchedule.Interface
 		{
 			base.AddActionButtons();
 
-			Rectangle sourceRect = new Rectangle(0, ActionButtonIconOffsetY, ActionButtonIconSize.X, ActionButtonIconSize.Y);
-			GoToButton = this.CreateActionButton(which: nameof(GoToButton), sourceRect: sourceRect);
-			SidebarActionButtons.Add(GoToButton);
+			OpenScheduleButton = this.CreateActionButton(which: nameof(OpenScheduleButton));
+			ViewSpawnButton = this.CreateActionButton(which: nameof(ViewSpawnButton));
+			GoToButton = this.CreateActionButton(which: nameof(GoToButton));
+			ReturnFromButton = this.CreateActionButton(which: nameof(ReturnFromButton));
 
-			sourceRect.X += sourceRect.Width;
-			OpenScheduleButton = this.CreateActionButton(which: nameof(OpenScheduleButton), sourceRect: sourceRect);
-			SidebarActionButtons.Add(OpenScheduleButton);
+			SidebarActionButtons.AddRange(new [] { ReturnFromButton, GoToButton, ViewSpawnButton, OpenScheduleButton });
 		}
 
 		protected override void ClickUpButton()
@@ -143,34 +152,63 @@ namespace InteractiveSchedule.Interface
 			if (!IsSelected || !ShouldDraw)
 				return;
 
-			if (IsOnHomePage)
+			if (SidebarActionButtons.Any())
 			{
-				ClickableTextureComponent button = Heads.FirstOrDefault(head => head.containsPoint(x, y));
-				if (button != null)
+				if (IsOnHomePage)
 				{
-					SelectedChara = Game1.getCharacterFromName(name: button.name);
-				}
-			}
-			else
-			{
-				if (GoToButton.containsPoint(x, y))
-				{
-					if (SelectedChara.currentLocation.Name != Game1.currentLocation.Name)
+					ClickableTextureComponent button = Heads.FirstOrDefault(head => head.containsPoint(x, y));
+					if (button != null)
 					{
-						// Cast view to characters in other locations
-						Desktop.ViewLocation(locationName: SelectedChara.currentLocation.Name, tileLocation: SelectedChara.getTileLocationPoint());
-					}
-					else
-					{
-						// Pan view to characters in this location
-						Game1.panScreen(
-							x: (SelectedChara.getTileX() * Game1.tileSize) - (Game1.viewport.Width / 2),
-							y: (SelectedChara.getTileY() * Game1.tileSize) - (Game1.viewport.Height / 2));
+						SelectedChara = Game1.getCharacterFromName(name: button.name);
 					}
 				}
-				else if (OpenScheduleButton.containsPoint(x, y))
+				else
 				{
+					if (ReturnFromButton.containsPoint(x, y))
+					{
+						if (!string.IsNullOrEmpty(ModEntry.Instance._originalLocation) && SelectedChara.currentLocation.Name != ModEntry.Instance._originalLocation)
+						{
+							// Return view to farmer if in another location
+							Desktop.ReturnFromViewLocation();
+						}
+						else
+						{
+							// Pan view to farmer if in this location
+							Game1.panScreen(
+								x: (Game1.player.getTileX() * Game1.tileSize) - (Game1.viewport.Width / 2),
+								y: (Game1.player.getTileY() * Game1.tileSize) - (Game1.viewport.Height / 2));
+						}
+					}
+					else if (GoToButton.containsPoint(x, y))
+					{
+						if (SelectedChara.currentLocation.Name != Game1.currentLocation.Name)
+						{
+							// Cast view to characters in other locations
+							Desktop.ViewLocation(locationName: SelectedChara.currentLocation.Name, tilePosition: SelectedChara.getTileLocationPoint(), notify: true);
+						}
+						else
+						{
+							// Pan view to characters in this location
+							Game1.panScreen(
+								x: (SelectedChara.getTileX() * Game1.tileSize) - (Game1.viewport.Width / 2),
+								y: (SelectedChara.getTileY() * Game1.tileSize) - (Game1.viewport.Height / 2));
+						}
+					}
+					else if (OpenScheduleButton.containsPoint(x, y))
+					{
+						ClickableTextureComponent icon = Desktop.Taskbar.Icons.First(i => i.name == nameof(SchedulePreviewMenu));
+						IClickableMenu menu = Desktop.Taskbar.TryClickTaskbarIcon(icon.bounds.X, icon.bounds.Y);
+						if (menu is SchedulePreviewMenu scheduleMenu && scheduleMenu.WindowBar != null)
+						{
+							scheduleMenu.WindowBar.IsMinimised = false;
+							scheduleMenu.SetCharacter(SelectedChara);
+							return;
+						}
+					}
+					else if (ViewSpawnButton.containsPoint(x, y))
+					{
 
+					}
 				}
 			}
 		}
@@ -181,7 +219,7 @@ namespace InteractiveSchedule.Interface
 
 			base.performHoverAction(x, y);
 
-			if (!IsSelected || !ShouldDraw)
+			if (!ShouldUpdateHoverText)
 				return;
 
 			if (IsOnHomePage)
@@ -196,13 +234,8 @@ namespace InteractiveSchedule.Interface
 			}
 		}
 
-		public override void draw(SpriteBatch b)
+		public override void DrawContent(SpriteBatch b)
 		{
-			base.draw(b);
-
-			if (!ShouldDraw)
-				return;
-
 			if (IsOnHomePage)
 			{
 				// Character heads
@@ -244,16 +277,19 @@ namespace InteractiveSchedule.Interface
 				// Character location
 				positionChange.Y = textSize.Y + (Padding.Y * 2);
 				position.Y += positionChange.Y;
-				text = ModEntry.Instance.i18n.Get("ui.character.locationformat",
-				new {
+				text = ModEntry.Instance.i18n.Get("ui.tileinfo.locationformat",
+				new
+				{
 					LocationName = SelectedChara.currentLocation.Name,
-					TileLocation = SelectedChara.getTileLocationPoint().ToString()
+					TilePosition = SelectedChara.getTileLocationPoint().ToString()
 				});
 				position.Y += this.DrawText(b, position: position, text: text);
 			}
+		}
 
-			this.DrawFloatingActionButtons(b);
-			this.DrawHoverText(b);
+		public override void draw(SpriteBatch b)
+		{
+			base.draw(b);
 		}
 	}
 }
