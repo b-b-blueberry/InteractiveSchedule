@@ -19,8 +19,17 @@ namespace InteractiveSchedule.Interface
 		/// <summary>
 		/// Contextual popup window elements.
 		/// </summary>
-		public WindowPage ModalWindow;
-		public readonly bool IsModal;
+		public WindowModal ModalWindow
+		{
+			get => _modalWindow;
+			set
+			{
+				if (this is WindowModal && value != null)
+					throw new ArgumentException();
+				_modalWindow = value;
+			}
+		}
+		private WindowModal _modalWindow;
 		/// <summary>
 		/// Traverses up a level in the page, if the page has some kind of sub-page in addition to its landing page.
 		/// No behaviour if <see cref="IsOnHomePage"/>.
@@ -32,7 +41,7 @@ namespace InteractiveSchedule.Interface
 		public WindowBar WindowBar => _parentMenu is WindowBar ? _parentMenu as WindowBar : null;
 		/// <summary> Whether this whole <see cref="WindowPage"/> should be interactible or rendered in any way.</summary>
 		public bool ShouldDraw => WindowBar == null || WindowBar.ShouldDrawChild;
-		public override bool IsSelected => !Desktop.Children.Any() || this.GetType().Name == Desktop.Children.First().GetType().Name || IsModal;
+		public override bool IsSelected => !Desktop.Children.Any() || this.GetType().Name == Desktop.Children.First().GetType().Name || this is WindowModal;
 		/// <summary>
 		/// Whether the window is on some sub-page other than its landing page.
 		/// </summary>
@@ -70,9 +79,10 @@ namespace InteractiveSchedule.Interface
 		/// Position for <see cref="SidebarActionButtons"/> to be centred within <see cref="ActionButtonSidebarArea"/> if origin is <see cref="Vector2.Zero"/>.
 		/// </summary>
 		public Point ActionButtonOrigin { get; private set; }
-		protected bool ShouldUpdateHoverText => IsSelected && ShouldDraw && string.IsNullOrEmpty(_hoverText);
+		protected bool ShouldUpdateHoverText => IsSelected && ShouldDraw && string.IsNullOrEmpty(_hoverText) && !Desktop.IsLeftClickHeld && !Desktop.IsRightClickHeld;
 
-		protected const float ActionButtonHoverScale = 0.4f;
+		protected int HeadingHeight { get; private set; }
+		protected const float ActionButtonHoverScale = 0.45f;
 		protected const int ActionButtonIconSourceY = 74;
 		protected static readonly Point UpButtonSize = new Point(16, 16);
 		protected static readonly Point ActionButtonSize = new Point(18, 18);
@@ -81,32 +91,53 @@ namespace InteractiveSchedule.Interface
 		private static readonly Rectangle UpButtonSource = new Rectangle(46, 0, UpButtonSize.X, UpButtonSize.Y);
 		private static readonly Rectangle UpButtonIconSource = new Rectangle(62, 0, UpButtonSize.X, UpButtonSize.Y);
 		private static readonly Rectangle ActionButtonSource = new Rectangle(44, 26, ActionButtonSize.X, ActionButtonSize.Y);
-		private const int ActionButtonIconRowCount = 9;
+		private const int ActionButtonIconsPerSourceRow = 10;
 		protected enum ActionButtonIcon
 		{
+			// Row 1
 			Return = 0,
 			View,
+			Character,
 			Schedule,
 			ViewSpawn,
-			_4,
+			Camera,
 			Flag,
 			FollowPath,
-			Grid = ActionButtonIconRowCount,
+			WarpHere,
+			AddRemove,
+			// Row 2
+			Grid = ActionButtonIconsPerSourceRow,
 			TileHighlight,
 			PathsLayer,
 			Pathing,
-			Play,
+			TimeStop,
+			_2_5,
+			_2_6,
+			_2_7,
+			_2_8,
+			_2_9,
+			// Row 3
+			Save = ActionButtonIconsPerSourceRow * 2,
+			Load,
+			NewFolder,
+			_3_3,
+			_3_4,
+			_3_5,
+			_3_6,
+			_3_7,
+			_3_8,
+			_3_9,
+			// Row 4
+			Play = ActionButtonIconsPerSourceRow * 3,
 			Stop,
 			Pause,
-			TimeStop = ActionButtonIconRowCount * 2,
-			_1,
-			_2,
-			_3,
-			Save,
-			Load,
+			_4_3,
+			_4_4,
+			_4_5,
+			_4_6,
+			Trash,
 			OK,
-			Cancel,
-			Blank
+			Cancel
 		}
 		protected static readonly Dictionary<string, ActionButtonIcon> ActionButtonIcons = new Dictionary<string, ActionButtonIcon>
 		{
@@ -115,25 +146,24 @@ namespace InteractiveSchedule.Interface
 			{ nameof(Menus.TileInfoMenu.TileHighlightButton), ActionButtonIcon.TileHighlight },
 			{ nameof(Menus.TileInfoMenu.GridViewButton), ActionButtonIcon.Grid },
 			{ nameof(Menus.CharacterListMenu.GoToButton), ActionButtonIcon.View },
-			{ nameof(Menus.CharacterListMenu.ViewSpawnButton), ActionButtonIcon.ViewSpawn },
-			{ nameof(Menus.CharacterListMenu.OpenScheduleButton), ActionButtonIcon.Schedule },
+			{ nameof(Menus.CharacterListMenu.GoToSpawnButton), ActionButtonIcon.ViewSpawn },
+			{ nameof(Menus.CharacterListMenu.ViewScheduleButton), ActionButtonIcon.Schedule },
 			{ nameof(Menus.CharacterListMenu.ReturnFromButton), ActionButtonIcon.Return },
-			{ nameof(Menus.MapMenu.WarpHereButton), ActionButtonIcon.Blank },
+			{ nameof(Menus.MapMenu.WarpHereButton), ActionButtonIcon.WarpHere },
 			{ nameof(Menus.MapMenu.ViewLocationButton), ActionButtonIcon.View },
 			{ nameof(Menus.MapMenu.ReturnViewLocationButton), ActionButtonIcon.Return },
+			{ nameof(Menus.SchedulePreviewMenu.ViewCharacterButton), ActionButtonIcon.Character },
+			{ nameof(Menus.SchedulePreviewMenu.EditListButton), ActionButtonIcon.AddRemove },
+			{ nameof(Menus.ProjectViewMenu.NewProjectButton), ActionButtonIcon.NewFolder },
 			// Modals
 			{ nameof(Modals.LocationSelectModal.GoButton), ActionButtonIcon.OK },
 		};
 
 
-		protected WindowPage(Point position, WindowPage modalParent = null) : base()
+		protected WindowPage(Point position)
+			: base()
 		{
-			IsModal = modalParent != null;
-			if (IsModal)
-			{
-				_parentMenu = modalParent;
-			}
-			else
+			if (!(this is WindowModal))
 			{
 				this.GenerateWindowBar(position);
 			}
@@ -164,8 +194,8 @@ namespace InteractiveSchedule.Interface
 			foreach (KeyValuePair<ClickableTextureComponent, Point> button in FloatingActionButtons)
 			{
 				button.Key.bounds = new Rectangle(
-					BorderSafeArea.X + button.Value.X,
-					BorderSafeArea.Y + button.Value.Y,
+					xPositionOnScreen + button.Value.X,
+					yPositionOnScreen + button.Value.Y,
 					button.Key.sourceRect.Width * MenuScale,
 					button.Key.sourceRect.Height * MenuScale);
 			}
@@ -212,17 +242,21 @@ namespace InteractiveSchedule.Interface
 					sourceRect: UpButtonSource,
 					scale: MenuScale);
 			}
-			UpButton.bounds = new Rectangle(sidebarWidth > 0
-					? ActionButtonSidebarArea.X + ((sidebarWidth - (UpButtonSource.Width * MenuScale)) / 2) + (BorderWidth / 2 * MenuScale)
+			Vector2 offset = ISUtilities.GetOffsetToCentre(
+					dimensions: new Point(UpButtonSource.Width * MenuScale, UpButtonSource.Height * MenuScale),
+					bounds: new Point(sidebarWidth, HeadingHeight));
+			UpButton.bounds = new Rectangle(
+				sidebarWidth > 0
+					? ActionButtonSidebarArea.X + (int)offset.X
 					: BorderSafeArea.X + BorderSafeArea.Width - Padding.X - (UpButtonSource.Width * MenuScale),
-				BorderSafeArea.Y + Padding.Y,
+				BorderSafeArea.Y + (int)offset.Y,
 				UpButtonSource.Width * MenuScale,
 				UpButtonSource.Height * MenuScale);
 
 			// Action buttons
 			ActionButtonOrigin = new Point(
-				ActionButtonSidebarArea.X + ((ActionButtonSidebarArea.Width - (ActionButtonSize.X * MenuScale) - ActionButtonIconOffset.X * MenuScale) / 2),
-				ActionButtonSidebarArea.Y + height - (ActionButtonSize.Y * MenuScale) - (Padding.Y * 2));
+				ActionButtonSidebarArea.X + ((ActionButtonSidebarArea.Width - (ActionButtonSize.X * MenuScale) - (ActionButtonIconOffset.X * MenuScale)) / 2),
+				ActionButtonSidebarArea.Y + BorderSafeArea.Height - (ActionButtonSize.Y * MenuScale) - (Padding.Y * 2));
 
 			// Sidebar action buttons
 			for (int i = 0; i < SidebarActionButtons.Count; ++i)
@@ -248,6 +282,7 @@ namespace InteractiveSchedule.Interface
 			SidebarColour = Color.LightSkyBlue;
 			InnerBorderColourSelected = Color.White;
 			InnerBorderColourDeselected = Color.LightSlateGray;
+			HeadingHeight = (int)HeadingTextFont.MeasureString("Afterglow").Y + Padding.Y;
 		}
 
 		/// <summary>
@@ -267,8 +302,8 @@ namespace InteractiveSchedule.Interface
 			}
 
 			Rectangle sourceRect = new Rectangle(
-				((int)whichIcon % ActionButtonIconRowCount) * ActionButtonIconSize.X,
-				ActionButtonIconSourceY + (((int)whichIcon / ActionButtonIconRowCount) * ActionButtonIconSize.Y),
+				((int)whichIcon % ActionButtonIconsPerSourceRow) * ActionButtonIconSize.X,
+				ActionButtonIconSourceY + (((int)whichIcon / ActionButtonIconsPerSourceRow) * ActionButtonIconSize.Y),
 				ActionButtonIconSize.X,
 				ActionButtonIconSize.Y);
 
@@ -304,12 +339,16 @@ namespace InteractiveSchedule.Interface
 			return ShouldDraw && base.isWithinBounds(x, y);
 		}
 
+		protected abstract void Hover(int x, int y);
+
 		public override void performHoverAction(int x, int y)
 		{
+			_hoverText = "";
+
 			base.performHoverAction(x, y);
 			ModalWindow?.performHoverAction(x, y);
 
-			if (ShouldDraw && ModalWindow == null)
+			if (!(this is WindowModal) && ShouldDraw && ModalWindow == null)
 			{
 				if (IsActionButtonSidebarVisible)
 				{
@@ -332,7 +371,12 @@ namespace InteractiveSchedule.Interface
 					}
 				}
 
-				UpButton.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
+				UpButton?.tryHover(x, y, maxScaleIncrease: ActionButtonHoverScale);
+			}
+
+			if (ShouldUpdateHoverText)
+			{
+				this.Hover(x, y);
 			}
 		}
 
@@ -362,19 +406,26 @@ namespace InteractiveSchedule.Interface
 			}*/
 		}
 
+		protected abstract void LeftClick(int x, int y, bool playSound);
+
 		/// <summary>
 		/// Children should call base method before custom behaviour.
 		/// </summary>
 		public override void receiveLeftClick(int x, int y, bool playSound = true)
 		{
-			// TODO: FIX: Resolve leftclick occurring for UpButton and then for any elements appearing beneath it
-
 			base.receiveLeftClick(x, y, playSound);
 			ModalWindow?.receiveLeftClick(x, y, playSound);
 
-			if (IsSelected && ShouldDraw && ModalWindow == null && !IsOnHomePage && UpButton != null && UpButton.containsPoint(x, y))
+			if (this is WindowModal || (IsSelected && ShouldDraw && ModalWindow == null))
 			{
-				this.ClickUpButton();
+				if (!IsOnHomePage && UpButton != null && UpButton.containsPoint(x, y))
+				{
+					this.ClickUpButton();
+				}
+				else
+				{
+					this.LeftClick(x, y, playSound);
+				}
 			}
 		}
 
@@ -384,15 +435,49 @@ namespace InteractiveSchedule.Interface
 			ModalWindow?.update(time);
 		}
 
-		public int DrawHeading(SpriteBatch b, Vector2 position, string text, bool drawBackground)
+		public Vector2 DrawHeading(SpriteBatch b, Vector2 position, string text, bool drawBackground,
+			string subheading = null, bool subheadingBelow = false, NPC characterSprite = null)
 		{
+			Vector2 spaceToClearHeading = new Vector2(0, Padding.Y * 2);
+			Vector2 spaceToClearSubheading = new Vector2(Padding.X, Padding.Y);
+			const float spaceToAlignSubheadingWithHeading = (-1.75f * MenuScale);
+			float spaceToClearSprite = 0f;
+			Point headerArea = new Point(
+				BorderSafeArea.Width - ActionButtonSidebarArea.Width,
+				(int)(position.Y - BorderSafeArea.Y + HeadingHeight));
+
+			// Colour fill
 			if (drawBackground)
 			{
 				b.Draw(
 					texture: Game1.fadeToBlackRect,
-					destinationRectangle: new Rectangle(BorderSafeArea.X, BorderSafeArea.Y, BorderSafeArea.Width - ActionButtonSidebarArea.Width, (int)(position.Y - BorderSafeArea.Y + HeadingTextFont.MeasureString(text).Y + Padding.Y)),
+					destinationRectangle: new Rectangle(
+						BorderSafeArea.X,
+						BorderSafeArea.Y,
+						headerArea.X,
+						headerArea.Y),
 					color: SidebarColour * ShadowOpacity);
 			}
+
+			// Character sprite
+			if (characterSprite != null)
+			{
+				const float spriteScale = 3f;
+				const float spriteOffset = -4f * MenuScale;
+				Rectangle sourceRect = characterSprite.getMugShotSourceRect();
+				float yOffset = ISUtilities.GetOffsetToCentre(
+					dimensions: new Vector2(sourceRect.Width * spriteScale, sourceRect.Height * spriteScale),
+					bounds: headerArea).Y;
+				spaceToClearSprite = (sourceRect.Width * spriteScale) + (Padding.X * 2);
+				b.Draw(texture: characterSprite.Sprite.Texture,
+					position: new Vector2(position.X, BorderSafeArea.Y + spriteOffset + yOffset),
+					sourceRectangle: sourceRect,
+					color: Color.White,
+					rotation: 0f, origin: Vector2.Zero, scale: 3f, effects: SpriteEffects.None, layerDepth: 1f);
+			}
+
+			// Heading text
+			position.X += spaceToClearSprite;
 			text = Game1.parseText(text, whichFont: BodyTextFont, width: (int)(ContentSafeArea.Width - (position.X - ContentSafeArea.X)));
 			Utility.drawTextWithColoredShadow(b,
 				text: text,
@@ -400,7 +485,38 @@ namespace InteractiveSchedule.Interface
 				position: position,
 				color: HeadingTextColour,
 				shadowColor: ShadowColour * ShadowOpacity);
-			return (int)HeadingTextFont.MeasureString(text).Y + (Padding.Y * 2);
+			Vector2 textSize = HeadingTextFont.MeasureString(text);
+
+			// Subheading text
+			if (!string.IsNullOrEmpty(subheading))
+			{
+				Vector2 textSizeSubheading = BodyTextFont.MeasureString(text);
+				if (subheadingBelow)
+				{
+					position.X -= spaceToClearSprite;
+					textSize.Y += this.DrawSubheading(b,
+						position: new Vector2(
+							position.X,
+							position.Y + textSize.Y + spaceToClearHeading.Y),
+						text: subheading);
+					textSize.Y += spaceToClearSubheading.Y;
+				}
+				else
+				{
+					this.DrawSubheading(b,
+						position: new Vector2(
+							position.X + textSize.X + spaceToClearHeading.X,
+							position.Y + textSize.Y - textSizeSubheading.Y + spaceToAlignSubheadingWithHeading),
+						text: subheading);
+					textSize.X += spaceToClearSubheading.X;
+				}
+			}
+			else
+			{
+				textSize += spaceToClearHeading;
+			}
+
+			return textSize;
 		}
 
 		public int DrawSubheading(SpriteBatch b, Vector2 position, string text)
@@ -415,14 +531,17 @@ namespace InteractiveSchedule.Interface
 			return (int)BodyTextFont.MeasureString(text).Y + Padding.Y;
 		}
 
-		public int DrawText(SpriteBatch b, Vector2 position, string text)
+		public int DrawText(SpriteBatch b, Vector2 position, string text, SpriteFont font = null)
 		{
-			text = Game1.parseText(text, whichFont: BodyTextFont, width: (int)(ContentSafeArea.Width - (position.X - ContentSafeArea.X)));
-			return base.DrawText(b, position: position, text: text, font: BodyTextFont, colour: BodyTextColour);
+			font ??= BodyTextFont;
+			text = Game1.parseText(text, whichFont: font, width: (int)(ContentSafeArea.Width - (position.X - ContentSafeArea.X)));
+			return base.DrawText(b, position: position, text: text, font: font, colour: BodyTextColour);
 		}
 
 		public void DrawActionButton(SpriteBatch b, ClickableTextureComponent button)
 		{
+			if (!button.visible)
+				return;
 			// Action button
 			b.Draw(
 				texture: ModEntry.Sprites,
@@ -431,7 +550,11 @@ namespace InteractiveSchedule.Interface
 					button.bounds.Y + (ActionButtonIconOffset.Y * MenuScale / 2)),
 				sourceRectangle: ActionButtonSource,
 				color: Desktop.Taskbar.InterfaceColour,
-				rotation: 0f, origin: Vector2.Zero, scale: MenuScale, effects: SpriteEffects.None, layerDepth: 1f);
+				rotation: 0f,
+				origin: Vector2.Zero,
+				scale: MenuScale,
+				effects: SpriteEffects.None,
+				layerDepth: 1f);
 			// Action button icon
 			button.draw(b);
 		}
@@ -494,7 +617,7 @@ namespace InteractiveSchedule.Interface
 				color: PageColour);
 		}
 
-		public abstract void DrawContent(SpriteBatch b);
+		protected abstract void DrawContent(SpriteBatch b);
 
 		public override void draw(SpriteBatch b)
 		{
@@ -526,11 +649,19 @@ namespace InteractiveSchedule.Interface
 				// container
 				UpButton.draw(b, c: Desktop.Taskbar.InterfaceColour, layerDepth: 1f);
 				// icon
+				Vector2 offset = new Vector2(
+						UpButtonIconSource.Width,
+						UpButtonIconSource.Height);
 				b.Draw(
 					texture: ModEntry.Sprites,
-					destinationRectangle: UpButton.bounds,
+					position: new Vector2(UpButton.bounds.X, UpButton.bounds.Y) + offset,
 					sourceRectangle: UpButtonIconSource,
-					color: Color.White);
+					color: Color.White,
+					rotation: 0f,
+					origin: offset / 2,
+					scale: UpButton.scale,
+					effects: SpriteEffects.None,
+					layerDepth: 1f);
 			}
 
 			if (ModalWindow != null)

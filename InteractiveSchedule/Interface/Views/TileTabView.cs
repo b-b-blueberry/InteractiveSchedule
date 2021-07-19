@@ -9,15 +9,15 @@ using System.Linq;
 using xTile.ObjectModel;
 using xTile.Tiles;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Views
 {
-	public class TilePageTabView : Components.TabViewComponent
+	public class TileTabView : Components.TabViewComponent
 	{
 		public readonly List<Texture2D> PreservedTileSheetImages = new List<Texture2D>();
 		public const string TilePropertiesTabId = "tileproperties";
 		public const string TileIndexesTabId = "tileindexes";
 
-		public TilePageTabView(IClickableMenu parentMenu, Point relativePosition)
+		public TileTabView(IClickableMenu parentMenu, Point relativePosition)
 			: base (parentMenu: parentMenu, relativePosition: relativePosition)
 		{
 			this.AddTabs(whichTabs: new [] {TilePropertiesTabId, TileIndexesTabId });
@@ -39,7 +39,7 @@ namespace InteractiveSchedule.Interface
 
 		public override void DrawContent(SpriteBatch b)
 		{
-			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
+			Vector2 position = ContentOrigin;
 			if (ActiveTab == TilePropertiesTabId)
 			{
 				if (((Menus.TileInfoMenu)_parentMenu).PreservedCursorTiles.Any(tile => tile.Properties.Any()))

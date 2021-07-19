@@ -23,27 +23,39 @@ namespace InteractiveSchedule.Interface
 
 		private float _xTranslateScale;
 
-		private static readonly float _xTranslateRate = 0.08f;
+		private const float XTranslateRate = 0.08f;
 		private static readonly Rectangle ExpandButtonSource = new Rectangle(36, 9, 9, 16);
 		private static readonly Rectangle ExpandArrowSource = new Rectangle(46, 17, 5, 8);
 		private static readonly Rectangle AvatarButtonSource = new Rectangle(0, 25, 22, 22);
 		private static readonly Rectangle MuteButtonSource = new Rectangle(78, 0, 12, 12);
 		private static readonly List<string> IconsToAdd = new List<string>
 		{
-			nameof(Menus.CharacterListMenu), nameof(Menus.SchedulePreviewMenu),
-			"DialogueMenu", "FileManagerMenu",
-			nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu),
-			"OptionsMenu", "HelpMenu"
+			nameof(Menus.CharacterListMenu),
+			"AnimationsMenu", "GiftTastesMenu", "DialogueMenu",
+			nameof(Menus.SchedulePreviewMenu), nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu),
+			"AssetViewMenu",
+			nameof(Menus.ProjectViewMenu),
+			"FileManagerMenu", "BuildMenu", "OptionsMenu", "HelpMenu"
 		};
 
 		public Taskbar()
 		{
-			ModEntry.Instance.Helper.Events.Display.RenderedWorld += this.Display_RenderedWorld;
+			ModEntry.Instance.Helper.Events.Display.RenderedWorld += Display_RenderedWorld;
 			this.SetupTaskbarButtons();
+		}
+
+		public override void emergencyShutDown()
+		{
+			base.emergencyShutDown();
+
+			ModEntry.Instance.Helper.Events.Display.RenderedWorld -= Display_RenderedWorld;
+			ModEntry.Instance.SetActiveState(active: false);
 		}
 
 		protected override void cleanupBeforeExit()
 		{
+			ModEntry.Instance.Helper.Events.Display.RenderedWorld -= Display_RenderedWorld;
+
 			this.SetActiveState(active: false);
 			ExpandButton = null;
 			AvatarButton = null;
@@ -159,13 +171,8 @@ namespace InteractiveSchedule.Interface
 		public void SetActiveState(bool active)
 		{
 			IsExpanded = active;
-			Game1.activeClickableMenu = active ? Desktop : null;
-			Game1.isTimePaused = active;
-			Game1.displayHUD = !active;
-			Game1.displayFarmer = !active;
-			Game1.viewportFreeze = active || !string.IsNullOrEmpty(ModEntry.Instance._originalLocation);
-			Game1.player.viewingLocation.Value = active ? Game1.currentLocation.Name : null;
-			_xTranslateScale += (active ? 1 : -1) * _xTranslateRate;
+			ModEntry.Instance.SetActiveState(active: active);
+			_xTranslateScale += (active ? 1 : -1) * XTranslateRate;
 		}
 
 		/// <summary>
@@ -176,23 +183,35 @@ namespace InteractiveSchedule.Interface
 			// Clicking taskbar icons
 			if (Icons.FirstOrDefault(i => i.containsPoint(x, y)) is ClickableTextureComponent icon && icon != null)
 			{
-				IClickableMenu menu = Desktop.Children.FirstOrDefault(child => icon.name == child.GetType().Name);
-				if (menu == null)
-				{
-					menu = this.CreateNewMenu(icon.name);
-				}
-				else
-				{
-					// Redirect to existing menu windows if they exist
-					if (menu.GetParentMenu() is WindowBar windowBar)
-					{
-						windowBar.IsMinimised = !windowBar.IsMinimised;
-						Desktop.SelectedChildIndex = Desktop.Children.IndexOf(menu);
-					}
-				}
-				return menu;
+				return this.ClickTaskbarIcon(typeName: icon.name);
 			}
 			return null;
+		}
+
+		internal IClickableMenu ClickTaskbarIcon(string typeName, bool? forceSelected = null)
+		{
+			IClickableMenu menu = Desktop.Children.FirstOrDefault(child => typeName == child.GetType().Name);
+			if (menu == null)
+			{
+				menu = this.CreateNewMenu(typeName);
+			}
+			else if (menu.GetParentMenu() is WindowBar windowBar)
+			{
+				// Redirect to existing menu windows if they exist, or force select menus
+				if (windowBar.IsSelected)
+				{
+					windowBar.IsMinimised = !windowBar.IsMinimised;
+				}
+				else if (forceSelected.HasValue && forceSelected.Value)
+				{
+					windowBar.IsMinimised = false;
+				}
+				if (!forceSelected.HasValue || forceSelected.Value)
+				{
+					Desktop.SelectedChildIndex = Desktop.Children.IndexOf(menu);
+				}
+			}
+			return menu;
 		}
 
 		/// <summary>
@@ -201,41 +220,23 @@ namespace InteractiveSchedule.Interface
 		/// <param name="typeName">Name of the menu type to create, as stored in elements of <see cref="Icons"/>, indexed by <see cref="IconsToAdd"/>.</param>
 		public IClickableMenu CreateNewMenu(string typeName)
 		{
-			IClickableMenu menu = null;
-
 			// Add a new menu window to the desktop if no instance currently exists
-			IClickableMenu lastChild = Desktop.Children.LastOrDefault();
-			Point position = lastChild != null
-				? new Point(lastChild.xPositionOnScreen + (25 * MenuScale), lastChild.yPositionOnScreen)
+			IClickableMenu firstChild = Desktop.Children.FirstOrDefault();
+			Point position = firstChild != null
+				? new Point(firstChild.xPositionOnScreen + (25 * MenuScale), firstChild.yPositionOnScreen)
 				: new Point(width + (50 * MenuScale), 10 * MenuScale);
 
-			if (typeName == nameof(Menus.CharacterListMenu))
-			{
-				menu = new Menus.CharacterListMenu(position: position);
-			}
-			else if (typeName == nameof(Menus.SchedulePreviewMenu))
-			{
-				menu = new Menus.SchedulePreviewMenu(position: position);
-			}
-			else if (typeName == nameof(Menus.TileInfoMenu))
-			{
-				menu = new Menus.TileInfoMenu(position: position);
-			}
-			else if (typeName == nameof(Menus.MapMenu))
-			{
-				menu = new Menus.MapMenu(position: position);
-			}
+			Type thisType = this.GetType();
+			Type type = Type.GetType(thisType.AssemblyQualifiedName.Replace(thisType.Name, "Menus." + typeName));
+			IClickableMenu menu = (IClickableMenu)type
+				.GetConstructor(new Type[] { typeof(Point) })
+				.Invoke(new object[] { position });
 
 			if (menu != null)
 			{
-				// Resize the window bar once content has been loaded
-				((WindowPage)menu).WindowBar.RealignElements();
-				menu.xPositionOnScreen -= Math.Max(0, Game1.viewport.Width - (menu.xPositionOnScreen + menu.width));
-				menu.yPositionOnScreen -= Math.Max(0, Game1.viewport.Height - (menu.yPositionOnScreen + menu.height));
-				((WindowPage)menu).WindowBar.RealignElements();
-
 				// Register our new menu to the desktop
 				Desktop.Children.Add(menu);
+				Desktop.SelectedChildIndex = Desktop.Children.IndexOf(menu);
 			}
 
 			return menu;
@@ -306,12 +307,18 @@ namespace InteractiveSchedule.Interface
 
 			if ((!IsExpanded && _xTranslateScale > 0f) || (IsExpanded && _xTranslateScale < 1f))
 			{
-				_xTranslateScale = Math.Max(0f, Math.Min(1f, _xTranslateScale + ((!IsExpanded ? -1 : 1) * _xTranslateRate)));
+				_xTranslateScale = Math.Max(0f, Math.Min(1f, _xTranslateScale + ((!IsExpanded ? -1 : 1) * XTranslateRate)));
 				this.RealignElements();
 			}
 		}
 
-		private void Display_RenderedWorld(object sender, RenderedWorldEventArgs e)
+		public override void gameWindowSizeChanged(Rectangle oldBounds, Rectangle newBounds)
+		{
+			base.gameWindowSizeChanged(oldBounds, newBounds);
+			this.RealignElements();
+		}
+
+		private static void Display_RenderedWorld(object sender, RenderedWorldEventArgs e)
 		{
 			if (Game1.currentLocation == null)
 			{
@@ -332,12 +339,12 @@ namespace InteractiveSchedule.Interface
 			}
 			*/
 			// Fade out background
-			if (_xTranslateScale > 0f)
+			if (ModEntry.Instance.Desktop.Taskbar?._xTranslateScale > 0f)
 			{
 				e.SpriteBatch.Draw(
 					texture: Game1.fadeToBlackRect,
 					destinationRectangle: Game1.graphics.GraphicsDevice.Viewport.GetTitleSafeArea(),
-					color: BackgroundColour * _xTranslateScale);
+					color: ModEntry.Instance.Desktop.Taskbar.BackgroundColour * ModEntry.Instance.Desktop.Taskbar._xTranslateScale);
 			}
 		}
 
@@ -381,29 +388,38 @@ namespace InteractiveSchedule.Interface
 
 		public override void draw(SpriteBatch b)
 		{
-			// Show/hide tab button
-			this.DrawExpandButton(b);
-
-			if (_xTranslateScale > 0f)
+			try
 			{
-				WindowBar.DrawWindowBarContainer(b, x: xPositionOnScreen, y: yPositionOnScreen, w: width, h: height, colour: InterfaceColour, greyed: false, simpleStyle: false);
+				// Show/hide tab button
+				this.DrawExpandButton(b);
 
-				// Main icon
-				this.DrawAvatarButton(b, AvatarButton.bounds);
-
-				// Taskbar icons, except for first (avatar) and last (mute)
-				for (int i = 1; i < Icons.Count - 1; ++i)
+				if (_xTranslateScale > 0f)
 				{
-					Rectangle area = new Rectangle(Icons[i].bounds.X - (Padding.X / 2), Icons[i].bounds.Y - Padding.Y, Icons[i].bounds.Width + Padding.X, Icons[i].bounds.Height + (Padding.Y * 2));
-					WindowBar.DrawWindowBarContainer(b, area: area, colour: InterfaceColour, greyed: false, simpleStyle: true, drawShadow: true);
-					Icons[i].draw(b);
+					WindowBar.DrawWindowBarContainer(b, x: xPositionOnScreen, y: yPositionOnScreen, w: width, h: height, colour: InterfaceColour, greyed: false, simpleStyle: false);
+
+					// Main icon
+					this.DrawAvatarButton(b, AvatarButton.bounds);
+
+					// Taskbar icons, except for first (avatar) and last (mute)
+					for (int i = 1; i < Icons.Count - 1; ++i)
+					{
+						Rectangle area = new Rectangle(Icons[i].bounds.X - (Padding.X / 2), Icons[i].bounds.Y - Padding.Y, Icons[i].bounds.Width + Padding.X, Icons[i].bounds.Height + (Padding.Y * 2));
+						WindowBar.DrawWindowBarContainer(b, area: area, colour: InterfaceColour, greyed: false, simpleStyle: true, drawShadow: true);
+						Icons[i].draw(b);
+					}
+
+					// Mute icon
+					MuteButton.draw(b);
 				}
 
-				// Mute icon
-				MuteButton.draw(b);
+				base.draw(b);
 			}
-
-			base.draw(b);
+			catch (Exception e)
+			{
+				Log.E(e.ToString());
+				this.emergencyShutDown();
+				this.exitThisMenuNoSound();
+			}
 		}
 	}
 }

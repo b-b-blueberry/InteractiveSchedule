@@ -13,7 +13,7 @@ namespace InteractiveSchedule.Interface
 	/// </summary>
 	public class CustomTextBox : IKeyboardSubscriber
 	{
-		public TextBoxComponent Container;
+		public Components.TextBoxComponent Container;
 
 		public string Text {
 			get => _text;
@@ -42,8 +42,6 @@ namespace InteractiveSchedule.Interface
 			}
 		}
 		public Color TextColour;
-		public Color TextBoxColour;
-		public Color TextBoxShadowColour;
 		public int LineCount { get; private set; }
 		public bool WordWrap
 		{
@@ -54,6 +52,7 @@ namespace InteractiveSchedule.Interface
 				this.UpdateDisplayText();
 			}
 		}
+		public readonly char[] ForbiddenCharacters;
 
 		public const int BorderWidth = 1;
 
@@ -95,11 +94,13 @@ namespace InteractiveSchedule.Interface
 		public event TextBoxEvent OnTabPressed;
 		public event TextBoxEvent OnBackspacePressed;
 
-		public CustomTextBox(TextBoxComponent container, SpriteFont font, string defaultText)
+		public CustomTextBox(Components.TextBoxComponent container, SpriteFont font, string defaultText,
+			char[] forbiddenCharacters = null)
 		{
 			Container = container;
 			Font = font;
 			DefaultText = defaultText ?? "";
+			ForbiddenCharacters = forbiddenCharacters ?? new char[0];
 
 			this.SetDefaults();
 		}
@@ -107,8 +108,6 @@ namespace InteractiveSchedule.Interface
 		public void SetDefaults()
 		{
 			TextColour = Game1.textColor;
-			TextBoxColour = Color.PapayaWhip * 0.5f;
-			TextBoxShadowColour = Container.AuxiliaryColour;
 		}
 
 		public void Update()
@@ -160,31 +159,6 @@ namespace InteractiveSchedule.Interface
 				return;
 
 			bool isDefaultText = string.IsNullOrEmpty(Text);
-
-			// Text box
-			// inner shadow:
-			int lineWidth = BorderWidth * CustomMenu.MenuScale;
-			Rectangle destRect = new Rectangle(Container.xPositionOnScreen, Container.yPositionOnScreen + lineWidth, Container.width, Container.height);
-			spriteBatch.Draw(
-				texture: Game1.fadeToBlackRect,
-				destinationRectangle: destRect,
-				color: TextBoxShadowColour);
-			// fill:
-			// canvas
-			destRect.Width -= lineWidth;
-			destRect.Height -= lineWidth;
-			destRect.Y += lineWidth;
-			spriteBatch.Draw(
-				texture: Game1.fadeToBlackRect,
-				destinationRectangle: destRect,
-				color: ((WindowPage)Container.GetParentMenu()).PageColour);
-			// colour
-			spriteBatch.Draw(
-				texture: Game1.fadeToBlackRect,
-				destinationRectangle: destRect,
-				color: TextBoxColour);
-
-			// Draw text
 			Vector2 position = Utility.PointToVector2(Container.ContentSafeArea.Location);
 			Color colour = TextColour * (isDefaultText ? 0.5f : 1f);
 			spriteBatch.DrawString(
@@ -257,11 +231,11 @@ namespace InteractiveSchedule.Interface
 			}
 
 			Container.CaretIndex = Container.GetCaretIndexFromCoordinates(position);
-			Container.ResetCaretTimer();
+			Container.ResetCaretTimer(showCaret: true);
 			this.UpdateDisplayText();
 		}
 
-		public void RecieveTextInput(char inputChar)
+		public void RecieveTextInput(char c)
 		{
 			if (!Selected)
 				return;
@@ -271,35 +245,43 @@ namespace InteractiveSchedule.Interface
 			bool isCtrl = keyboard.IsKeyDown(Keys.LeftControl) || keyboard.IsKeyDown(Keys.RightControl);
 			bool isAlt = keyboard.IsKeyDown(Keys.LeftAlt) || keyboard.IsKeyDown(Keys.RightAlt);
 			
-			char inputLower = inputChar.ToString().ToLower()[0];
+			char cLower = c.ToString().ToLower()[0];
 			if (isCtrl)
 			{
-				switch (inputLower)
+				switch (cLower)
 				{
 					case 'c':
 						return;
 				}
 			}
 
-			if (Container.NumbersOnly && !char.IsDigit(inputChar))
+			if (ForbiddenCharacters.Contains(c) || (Container.NumbersOnly && !char.IsDigit(c)))
 				return;
 
-			Container.EnterTextAtCaret(inputChar);
+			Container.EnterTextAtCaret(c);
 			this.UpdateDisplayText();
+			Container.ResetCaretTimer(showCaret: false);
 		}
 
 		public void RecieveTextInput(string text)
 		{
-			if (Selected && (!Container.NumbersOnly || int.TryParse(text, out int _)))
+			string parsedText = "";
+			foreach (char c in text)
 			{
-				Container.EnterTextAtCaret(text);
+				if (ForbiddenCharacters.Contains(c))
+					continue;
+				parsedText += c;
+			}
+			if (Selected && (!Container.NumbersOnly || int.TryParse(parsedText, out int _)))
+			{
+				Container.EnterTextAtCaret(parsedText);
 			}
 			this.UpdateDisplayText();
 		}
 
 		public void InsertText(int index, string text)
 		{
-			if (index <= 0)
+			if (index < 0)
 				Text = text + Text;
 			else if (index >= Text.Length - 1)
 				Text += text;
@@ -314,8 +296,10 @@ namespace InteractiveSchedule.Interface
 
 		public void RemoveText(int startIndex, int endIndex)
 		{
+			if (Text.Length == 0)
+				return;
 			startIndex = Math.Max(0, startIndex);
-			endIndex = Math.Min(Text.Length - 1, endIndex);
+			endIndex = Math.Max(0, Math.Min(Text.Length, endIndex));
 			if (startIndex == endIndex || startIndex > endIndex)
 				return;
 			int count = endIndex - startIndex;

@@ -22,13 +22,14 @@ namespace InteractiveSchedule.Interface.Menus
 
 		private GameLocation _lastHoveredLocation;
 		private Vector2 _mapOrigin;
-		private readonly Texture2D _map;
+		private Texture2D _map;
 		private static readonly Rectangle MapSource = new Rectangle(0, 0, 300, 180);
 
 		public MapMenu(Point position)
 			: base(position: position)
 		{
-			_map = Game1.content.Load<Texture2D>("LooseSprites\\map");
+			this.RealignElements();
+			this.RealignFloatingButtons();
 		}
 
 		protected override void cleanupBeforeExit()
@@ -46,7 +47,12 @@ namespace InteractiveSchedule.Interface.Menus
 		{
 			base.RealignElements();
 
-			if (WindowBar != null && _map != null)
+			if (_map == null)
+			{
+				_map = Game1.content.Load<Texture2D>("LooseSprites\\map");
+			}
+
+			if (WindowBar != null)
 			{
 				WindowBar.width = width = Math.Max(WindowBar.width, (MapSource.Width + 4) * MenuScale);
 				height = WindowBar.IsFullscreen
@@ -75,8 +81,8 @@ namespace InteractiveSchedule.Interface.Menus
 			{
 				int yOffset = (ActionButtonSize.Y * MenuScale) + (Padding.Y * 2);
 				FloatingActionButtons[ReturnViewLocationButton] = new Point(
-					Padding.X,
-					ActionButtonOrigin.Y - yOffset - Padding.Y);
+					(Padding.X * 2),
+					BorderSafeArea.Height - yOffset);
 				FloatingActionButtons[ViewLocationButton] = new Point(
 					FloatingActionButtons[ReturnViewLocationButton].X,
 					FloatingActionButtons[ReturnViewLocationButton].Y - yOffset);
@@ -126,7 +132,7 @@ namespace InteractiveSchedule.Interface.Menus
 				{ "Mine", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11098") },
 				{ "AdventureGuild", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11099") },
 				{ "FishShop", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11107") },
-				{ "BathHouseEntry", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11110") },
+				{ "BathHouse_Entry", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11110") },
 				{ "Woods", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11114") },
 				{ "Sewer", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11089") },
 				{ "Railroad", Game1.content.LoadString("Strings\\StringsFromCSFiles:MapPage.cs.11119") },
@@ -162,7 +168,7 @@ namespace InteractiveSchedule.Interface.Menus
 				{ "AdventureGuild", new Rectangle(225, 27, 8, 9) },
 				{ "Mine", new Rectangle(214, 19, 12, 12) },
 				{ "FishShop", new Rectangle(211, 152, 9, 10) },
-				{ "BathHouseEntry", new Rectangle(144, 15, 12, 9) },
+				{ "BathHouse_Entry", new Rectangle(144, 15, 12, 9) },
 				{ "Sewer", new Rectangle(95, 149, 6, 8) },
 				{ "Trailer", new Rectangle(195, 90, 7, 5) },
 				{ "JojaMart", new Rectangle(218, 70, 13, 13) },
@@ -218,13 +224,26 @@ namespace InteractiveSchedule.Interface.Menus
 			}
 		}
 
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
+		protected override void Hover(int x, int y)
 		{
-			base.receiveLeftClick(x, y, playSound);
+			foreach (ClickableComponent point in MapLocations)
+			{
+				if (point.containsPoint(x, y))
+				{
+					if (_lastHoveredLocation == null || _lastHoveredLocation.Name != point.name)
+					{
+						_lastHoveredLocation = Game1.getLocationFromName(point.name);
+					}
+					_hoverText = LocationStrings[point.name]
+						+ "\n\n>  " + (_lastHoveredLocation == null ? "???" : _lastHoveredLocation.Name)
+						+ "\n>     " + (_lastHoveredLocation == null ? "???" : _lastHoveredLocation.mapPath.Value);
+					return;
+				}
+			}
+		}
 
-			if (!IsSelected || !ShouldDraw || ModalWindow != null)
-				return;
-
+		protected override void LeftClick(int x, int y, bool playSound)
+		{
 			if (FloatingActionButtons.Any())
 			{
 				if (WarpHereButton.containsPoint(x, y))
@@ -233,6 +252,9 @@ namespace InteractiveSchedule.Interface.Menus
 						|| (Game1.currentLocation != null && Game1.player.viewingLocation.Value == Game1.player.currentLocation.Name))
 					{
 						Desktop.PlaySound("cancel");
+						Desktop.PushNotification(
+							text: ModEntry.Instance.i18n.Get("notif.error_warp_already.text"),
+							duration: Desktop.NotificationDuration.Short);
 					}
 					else
 					{
@@ -241,7 +263,7 @@ namespace InteractiveSchedule.Interface.Menus
 				}
 				if (ViewLocationButton.containsPoint(x, y))
 				{
-					ModalWindow = new Modals.LocationSelectModal(position: new Point(25 * MenuScale, 5 * MenuScale), parent: this);
+					ModalWindow = new Modals.LocationSelectModal(parent: this);
 				}
 				if (ReturnViewLocationButton.containsPoint(x, y))
 				{
@@ -255,29 +277,6 @@ namespace InteractiveSchedule.Interface.Menus
 				int warpX = 0, warpY = 0;
 				Utility.getDefaultWarpLocation(location_name: _lastHoveredLocation.Name, x: ref warpX, y: ref warpY);
 				Desktop.ViewLocation(locationName: _lastHoveredLocation.Name, tilePosition: new Point(warpX, warpY), notify: true);
-			}
-		}
-
-		public override void performHoverAction(int x, int y)
-		{
-			_hoverText = "";
-
-			base.performHoverAction(x, y);
-
-			if (!ShouldUpdateHoverText || ModalWindow != null)
-				return;
-
-			foreach (ClickableComponent point in MapLocations)
-			{
-				if (point.containsPoint(x, y))
-				{
-					if (_lastHoveredLocation == null || _lastHoveredLocation.Name != point.name)
-					{
-						_lastHoveredLocation = Game1.getLocationFromName(point.name);
-					}
-					_hoverText = LocationStrings[point.name] + "\n\n>  " + (_lastHoveredLocation == null ? "???" : _lastHoveredLocation.mapPath.Value);
-					return;
-				}
 			}
 		}
 
@@ -303,7 +302,7 @@ namespace InteractiveSchedule.Interface.Menus
 				layerDepth: 0.86f);
 		}
 
-		public override void DrawContent(SpriteBatch b)
+		protected override void DrawContent(SpriteBatch b)
 		{
 			this.DrawMap(b);
 		}

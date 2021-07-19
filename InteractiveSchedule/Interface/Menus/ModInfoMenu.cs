@@ -19,9 +19,9 @@ namespace InteractiveSchedule.Interface.Menus
 		public override bool IsUpButtonVisible => false;
 		public override bool IsActionButtonSidebarVisible => false;
 
-		public ModInfoMenu(Point position) : base(position: position)
+		public ModInfoMenu(Point position)
+			: base(position: position)
 		{
-			this.RealignElements();
 		}
 
 		protected override void cleanupBeforeExit()
@@ -63,21 +63,22 @@ namespace InteractiveSchedule.Interface.Menus
 			throw new NotImplementedException();
 		}
 
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
-		{
-			base.receiveLeftClick(x, y, playSound);
-		}
+		protected override void Hover(int x, int y)
+		{ }
 
-		public override void DrawContent(SpriteBatch b)
+		protected override void LeftClick(int x, int y, bool playSound)
+		{ }
+
+		protected override void DrawContent(SpriteBatch b)
 		{
 			Rectangle avatarSource = Desktop.Taskbar.AvatarButton.sourceRect;
-			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
+			Vector2 position = ContentOrigin;
 			string text;
 			int textWidth;
 
 			textWidth = ContentSafeArea.Width;
 			text = Game1.parseText(text: _headerText, whichFont: HeadingTextFont, width: textWidth);
-			position.Y += this.DrawHeading(b, position: position, text: text, drawBackground: true);
+			position.Y += this.DrawHeading(b, position: position, text: text, drawBackground: true).Y;
 			Rectangle avatarDest = new Rectangle(
 					(int)(position.X + HeadingTextFont.MeasureString(text).X - (avatarSource.Width * MenuScale) - Padding.X),
 					(int)(position.Y),

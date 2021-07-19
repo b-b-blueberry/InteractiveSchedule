@@ -6,23 +6,19 @@ using StardewValley.Menus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace InteractiveSchedule.Interface.Modals
 {
-	public class LocationSelectModal : WindowPage
+	public class LocationSelectModal : WindowModal
 	{
 		public ClickableTextureComponent GoButton;
-		public TextBoxComponent LocationTextBox;
-		public override bool IsOnHomePage => true;
-		public override bool IsUpButtonVisible => false;
-		public override bool IsActionButtonSidebarVisible => false;
+		public Components.TextBoxComponent LocationTextBox;
 
 
-		public LocationSelectModal(Point position, WindowPage parent)
-			: base(position: position, modalParent: parent) {}
+		public LocationSelectModal(WindowPage parent)
+			: base(modalParent: parent) {}
 
 		protected override void cleanupBeforeExit()
 		{
@@ -35,30 +31,41 @@ namespace InteractiveSchedule.Interface.Modals
 
 		public override void RealignElements()
 		{
-			width = 150 * MenuScale;
-			height = 48 * MenuScale;
+			const int charsWide = 24;
+			const int charsTall = 4;
 
-			base.RealignElements();
+			Vector2 textTitleDimension = new Vector2(
+				Game1.smallFont.MeasureString("This is a multi-line text box.").X,
+				Game1.smallFont.LineSpacing);
+
+			Vector2 textBoxPosition = new Vector2(
+				BorderWidth + Padding.X,
+				BorderWidth + Padding.Y + textTitleDimension.Y + (Padding.Y * 2));
 
 			if (LocationTextBox == null)
 			{
-				LocationTextBox = new TextBoxComponent(
+				LocationTextBox = new Components.TextBoxComponent(
 					parentMenu: this,
 					defaultText: "",
 					scrollable: true,
 					showLineNumbers: true,
 					singleLineOnly: false,
 					numbersOnly: false,
-					bounds: new Rectangle(
-						ContentSafeArea.X - xPositionOnScreen,
-						GoButton.bounds.Y - yPositionOnScreen - Padding.Y,
-						ContentSafeArea.Width - (ActionButtonSize.X * MenuScale) - (Padding.X * 3),
-						//(int)(BodyTextFont.MeasureString("Everywhere").Y + (Padding.Y * 2))));
-						(int)(BodyTextFont.MeasureString("Every\nThing\nHere\nNow").Y + (Padding.Y * 2))));
+					relativePosition: Utility.Vector2ToPoint(textBoxPosition),
+					columns: charsWide,
+					rows: charsTall);
 			}
 
+			Vector2 dimensions = new Vector2(
+				Math.Max(textTitleDimension.X, LocationTextBox.width + ActionButtonSize.X + (Padding.X * 4)) + (Padding.X * 2),
+				textTitleDimension.Y + LocationTextBox.height + BorderWidth + (Padding.Y * 4));
+
+			width = (int)dimensions.X;
+			height = (int)dimensions.Y;
+
+			base.RealignElements();
+
 			LocationTextBox.RealignElements();
-			ModalWindow?.RealignFloatingButtons();
 		}
 
 		public override void RealignFloatingButtons()
@@ -74,11 +81,6 @@ namespace InteractiveSchedule.Interface.Modals
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-		}
-
-		protected override void ClickUpButton()
-		{
-			throw new NotImplementedException();
 		}
 
 		protected override void AddActionButtons()
@@ -98,10 +100,10 @@ namespace InteractiveSchedule.Interface.Modals
 			LocationTextBox.receiveKeyPress(key);
 		}
 
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
-		{
-			base.receiveLeftClick(x, y, playSound);
+		protected override void Hover(int x, int y) { }
 
+		protected override void LeftClick(int x, int y, bool playSound)
+		{
 			if (_parentMenu is WindowPage windowPage)
 			{
 				if (!windowPage.IsSelected || !windowPage.ShouldDraw)
@@ -138,19 +140,14 @@ namespace InteractiveSchedule.Interface.Modals
 			LocationTextBox.update(time);
 		}
 
-		public override void DrawContent(SpriteBatch b)
+		protected override void DrawContent(SpriteBatch b)
 		{
-			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
+			Vector2 position = ContentOrigin;
 			position.Y += Padding.Y;
 			//this.DrawText(b, position: position, text: ModEntry.Instance.i18n.Get("ui.locationselect.label"));
-			this.DrawText(b, position: position, text: "This is a multi-line text box");
+			this.DrawText(b, position: position, text: "This is a multi-line text box!");
 
 			LocationTextBox.draw(b);
-		}
-
-		public override void draw(SpriteBatch b)
-		{
-			base.draw(b);
 		}
 	}
 }

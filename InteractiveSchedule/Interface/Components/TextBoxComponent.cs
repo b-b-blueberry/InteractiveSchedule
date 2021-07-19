@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
-namespace InteractiveSchedule.Interface
+namespace InteractiveSchedule.Interface.Components
 {
 	public class TextBoxComponent : ViewComponent
 	{
@@ -46,24 +47,57 @@ namespace InteractiveSchedule.Interface
 		private int _caretWidth;
 		private bool _showLineNumbers;
 
-		private const int LineNumberColumnWidth = 9;
+		internal const int LineNumberColumnWidth = 9;
 
-		public TextBoxComponent(IClickableMenu parentMenu, string defaultText,
+		public delegate void Validator(Regex pattern, string message);
+		public Validator validator = null;
+
+		private TextBoxComponent(IClickableMenu parentMenu, string defaultText,
 			bool scrollable, bool showLineNumbers, bool singleLineOnly, bool numbersOnly,
-			Rectangle bounds)
-			: base(parentMenu: parentMenu, relativePosition: new Point(bounds.X, bounds.Y))
+			Point relativePosition,
+			char[] forbiddenCharacters = null)
+			: base(parentMenu: parentMenu, relativePosition: relativePosition, drawBorder: true)
 		{
 			Scrollable = scrollable && !singleLineOnly;
 			ShowLineNumbers = showLineNumbers && !singleLineOnly;
 			SingleLineOnly = singleLineOnly;
 			NumbersOnly = numbersOnly;
-			Dimensions = new Point(bounds.Width, bounds.Height);
 			TextBox = new CustomTextBox(
 				container: this,
-				font: ModEntry.MonoThin,
-				defaultText: defaultText);
+				font: TextBoxFont,
+				defaultText: defaultText,
+				forbiddenCharacters: forbiddenCharacters);
 
 			this.RealignElements();
+		}
+
+		public TextBoxComponent(IClickableMenu parentMenu, string defaultText,
+			bool scrollable, bool showLineNumbers, bool singleLineOnly, bool numbersOnly,
+			Rectangle dimensions,
+			char[] forbiddenCharacters = null)
+			: this(parentMenu: parentMenu, defaultText: defaultText,
+				  scrollable: scrollable, showLineNumbers: showLineNumbers, singleLineOnly: singleLineOnly, numbersOnly: numbersOnly,
+				  relativePosition: new Point(dimensions.X, dimensions.Y),
+				  forbiddenCharacters: forbiddenCharacters)
+		{
+			Dimensions = new Point(dimensions.Width, dimensions.Height);
+		}
+
+		public TextBoxComponent(IClickableMenu parentMenu, string defaultText,
+			bool scrollable, bool showLineNumbers, bool singleLineOnly, bool numbersOnly,
+			Point relativePosition, int columns, int rows,
+			char[] forbiddenCharacters = null)
+			: this(parentMenu: parentMenu, defaultText: defaultText,
+				  scrollable: scrollable, showLineNumbers: showLineNumbers, singleLineOnly: singleLineOnly, numbersOnly: numbersOnly,
+				  relativePosition: relativePosition,
+				  forbiddenCharacters: forbiddenCharacters)
+		{
+			Dimensions = new Point(
+				(columns * ModEntry.MonoThinFontWidth)
+					+ (Padding.X * 2) + (BorderWidth * 2)
+					+ (showLineNumbers ? LineNumberColumnWidth * MenuScale : 0)
+					+ (scrollable && !singleLineOnly ? 0 : 0), // todo: scrollable text box: scrollbar width in ctor
+				rows * ModEntry.MonoThinFont.LineSpacing);
 		}
 
 		protected override void cleanupBeforeExit()
@@ -76,7 +110,7 @@ namespace InteractiveSchedule.Interface
 		{
 			base.SetDefaults();
 
-			AuxiliaryColour = Color.PaleVioletRed * 0.5f;
+			AuxiliaryColour = ViewBorderColour;
 			LineNumberColumnColour = AuxiliaryColour;
 			_caretDelay = 750;
 			_caretWidth = 1;
@@ -125,6 +159,7 @@ namespace InteractiveSchedule.Interface
 			if (TextBox.Selected && isPreviouslySelected)
 			{
 				CaretIndex = this.GetCaretIndexFromCursor(x, y);
+				this.ResetCaretTimer(showCaret: true);
 			}
 		}
 
@@ -139,7 +174,7 @@ namespace InteractiveSchedule.Interface
 
 		public void ResetCaretTimer(bool showCaret = false)
 		{
-			_caretTimer = showCaret ? 0 : _caretDelay / 2;
+			_caretTimer = showCaret ? _caretDelay / 2 : 0;
 		}
 
 		public void EnterTextAtCaret(char character)
@@ -155,8 +190,8 @@ namespace InteractiveSchedule.Interface
 
 		public void RemoveCharacterAtCaret()
 		{
-			--CaretIndex;
-			TextBox.RemoveText(CaretIndex);
+			TextBox.RemoveText(--CaretIndex);
+			CaretPosition = this.GetCaretCoordinatesFromIndex(_caretIndex);
 		}
 
 		// TODO: REMOVE PasteTextAtCaret for being useless
@@ -191,7 +226,7 @@ namespace InteractiveSchedule.Interface
 
 		public int GetCaretIndexFromCoordinates(int x, int y)
 		{
-			string[] splitText = TextBox.Text.Split('\n');
+			string[] splitText = TextBox.DisplayText.Split('\n');
 			int caretIndex = 0;
 			int targetRow = //_scrolledToRow;
 				0;
@@ -210,6 +245,9 @@ namespace InteractiveSchedule.Interface
 			// Seek to current character in current visible line
 			int whichColumn = Math.Min(splitText[whichRow].Length, x);
 			caretIndex += whichColumn;
+
+			// uuuhhhhh move back by tyhe number of display newlines
+			caretIndex -= TextBox.DisplayTextBreakLines.Count;
 
 			return caretIndex;
 		}
@@ -253,14 +291,14 @@ namespace InteractiveSchedule.Interface
 			// Line numbers container
 			Vector2 position = new Vector2(
 				xPositionOnScreen,
-				BorderSafeArea.Y);
+				yPositionOnScreen);
 			b.Draw(
 				texture: Game1.fadeToBlackRect,
 				destinationRectangle: new Rectangle(
 					(int)position.X,
 					(int)position.Y,
 					LineNumberColumnWidth * MenuScale,
-					BorderSafeArea.Height),
+					height),
 				sourceRectangle: null,
 				color: LineNumberColumnColour);
 
@@ -268,14 +306,14 @@ namespace InteractiveSchedule.Interface
 			string[] textSplit = TextBox.DisplayText.Split('\n');
 			int num = 0;
 			position.X = BorderSafeArea.X;
-			position.Y = ContentSafeArea.Y - ModEntry.MonoThin.LineSpacing;
+			position.Y = ContentSafeArea.Y - ModEntry.MonoThinFont.LineSpacing;
 			for (int i = 0; i < textSplit.Length - 1; ++i)
 			{
-				position.Y += ModEntry.MonoThin.LineSpacing;
+				position.Y += ModEntry.MonoThinFont.LineSpacing;
 				if (TextBox.DisplayTextBreakLines.Contains(i))
 					continue;
 				b.DrawString(
-					spriteFont: ModEntry.MonoThin,
+					spriteFont: ModEntry.MonoThinFont,
 					text: num.ToString(),
 					position: position,
 					color: Color.White);
@@ -285,10 +323,10 @@ namespace InteractiveSchedule.Interface
 
 		public override void draw(SpriteBatch b)
 		{
-			base.draw(b);
-
 			if (_parentMenu is WindowPage windowPage && !windowPage.ShouldDraw)
 				return;
+
+			base.draw(b);
 
 			TextBox.Draw(spriteBatch: b);
 			if (TextBox.Selected)

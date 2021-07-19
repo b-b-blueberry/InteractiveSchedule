@@ -82,6 +82,7 @@ namespace InteractiveSchedule.Interface
 		/// Matches header bar colour seen in <see cref="ModEntry.Sprites"/> spritesheet and used in <see cref="DrawWindowBarContainer"/>.
 		/// </summary>
 		public static Color BorderColour;
+		public static Color BorderColourAlternate;
 		/// <summary>
 		/// Common window menu buttons appearing in the top-right of this header bar.
 		/// Indexed in <see cref="MenuButton"/>.
@@ -95,11 +96,11 @@ namespace InteractiveSchedule.Interface
 		private bool _isMinimised;
 		private bool _isFullscreen;
 
-		private const int ButtonScale = 3;
+		private const int IconScale = 3;
 		private const int ButtonSpacing = 3 * MenuScale;
 		private static readonly Point BarButtonDimensions = new Point(9, 9);
-		private static readonly Point Dimensions = new Point(200, BarButtonDimensions.Y * ButtonScale);
-		private static readonly Point BarButtonAreaSize = new Point(((ButtonSpacing + BarButtonDimensions.X) * ButtonScale), BarButtonDimensions.Y * ButtonScale);
+		private static readonly Point Dimensions = new Point(200, BarButtonDimensions.Y * IconScale);
+		private static readonly Point BarButtonAreaSize = new Point(((ButtonSpacing + BarButtonDimensions.X) * IconScale), BarButtonDimensions.Y * IconScale);
 		private static readonly int[] BarButtonSourceOffset = new int[] { 0, 3, 2 };
 
 		public WindowBar(Components.WindowComponent childMenu, Point position, bool shouldDrawMenuButtons = true, bool warningStyle = false) : base()
@@ -110,6 +111,7 @@ namespace InteractiveSchedule.Interface
 			yPositionOnScreen = position.Y;
 			ShouldDrawMenuButtons = shouldDrawMenuButtons;
 			this.RealignElements();
+			childMenu.SnapWithinViewportBounds();
 		}
 
 		protected override void cleanupBeforeExit()
@@ -124,9 +126,10 @@ namespace InteractiveSchedule.Interface
 			base.SetDefaults();
 
 			// Get default border colour for window pages
-			Color[] pixels = new Color[1];
-			ModEntry.Sprites.GetData(level: 0, rect: new Rectangle(0, 10, 1, 1), data: pixels, startIndex: 0, elementCount: 1);
+			Color[] pixels = new Color[2];
+			ModEntry.Sprites.GetData(level: 0, rect: new Rectangle(17, 17, 2, 1), data: pixels, startIndex: 0, elementCount: 2);
 			BorderColour = pixels[0];
+			BorderColourAlternate = pixels[1];
 		}
 
 		public override void RealignElements()
@@ -197,17 +200,17 @@ namespace InteractiveSchedule.Interface
 			{
 				menuButtons[i] = new ClickableTextureComponent(
 					bounds: new Rectangle(
-						xPositionOnScreen + width - (BarButtonAreaSize.X * 2) + (i * BarButtonDimensions.X * ButtonScale) + (i * ButtonSpacing) - Padding.X,
-						yPositionOnScreen + ((height - (BarButtonDimensions.Y * ButtonScale)) / 2),
-						BarButtonDimensions.X * ButtonScale,
-						BarButtonDimensions.Y * ButtonScale),
+						xPositionOnScreen + width - (BarButtonAreaSize.X * 2) + (i * BarButtonDimensions.X * IconScale) + (i * ButtonSpacing) - Padding.X,
+						yPositionOnScreen + ((height - (BarButtonDimensions.Y * IconScale)) / 2),
+						BarButtonDimensions.X * IconScale,
+						BarButtonDimensions.Y * IconScale),
 					texture: ModEntry.Sprites,
 					sourceRect: new Rectangle(
 						BarButtonSourceOffset[i] * BarButtonDimensions.X,
 						0,
 						BarButtonDimensions.X,
 						BarButtonDimensions.Y),
-					scale: ButtonScale);
+					scale: IconScale);
 				if ((i == (int)MenuButton.Minimise && IsMinimised) || (i == (int)MenuButton.Window && IsFullscreen))
 				{
 					menuButtons[i].sourceRect.X += BarButtonDimensions.X;
@@ -257,9 +260,7 @@ namespace InteractiveSchedule.Interface
 			if (!IsSelected)
 				return;
 
-			++_leftClickHeldTimer;
-			if (_leftClickHeldTimer > LeftClickHoldDelay * LeftClickHeldDelayScale
-				&& (IsContentHidden || this.isWithinBounds(x, y)))
+			if (Desktop.IsLeftClickHeld && (IsContentHidden || this.isWithinBounds(x, y)))
 			{
 				if (x != Game1.getOldMouseX() || y != Game1.getOldMouseY())
 				{
@@ -288,7 +289,6 @@ namespace InteractiveSchedule.Interface
 			if (!IsSelected)
 				return;
 
-			_leftClickHeldTimer = 0f;
 			if (IsSelected && IsContentHidden)
 			{
 				this.RealignElements();
@@ -298,12 +298,12 @@ namespace InteractiveSchedule.Interface
 			base.releaseLeftClick(x, y);
 		}
 
-		public static void DrawWindowBarContainer(SpriteBatch b, Rectangle area, Color colour, bool greyed, bool simpleStyle = false, bool drawShadow = false)
+		public static void DrawWindowBarContainer(SpriteBatch b, Rectangle area, Color colour, bool greyed, bool simpleStyle = false, bool drawShadow = false, bool alternateColour = false)
 		{
-			WindowBar.DrawWindowBarContainer(b, x: area.X, y: area.Y, w: area.Width, h: area.Height, colour: colour, greyed: greyed, simpleStyle: simpleStyle, drawShadow: drawShadow);
+			WindowBar.DrawWindowBarContainer(b, x: area.X, y: area.Y, w: area.Width, h: area.Height, colour: colour, greyed: greyed, simpleStyle: simpleStyle, drawShadow: drawShadow, alternateColour: alternateColour);
 		}
 
-		public static void DrawWindowBarContainer(SpriteBatch b, int x, int y, int w, int h, Color colour, bool greyed, bool simpleStyle = false, bool drawShadow = false)
+		public static void DrawWindowBarContainer(SpriteBatch b, int x, int y, int w, int h, Color colour, bool greyed, bool simpleStyle = false, bool drawShadow = false, bool alternateColour = false)
 		{
 			// Draw window drop shadow
 			if (drawShadow)
@@ -311,7 +311,7 @@ namespace InteractiveSchedule.Interface
 				b.Draw(
 					texture: Game1.fadeToBlackRect,
 					destinationRectangle: new Rectangle(x - (1 * MenuScale), y + (1 * MenuScale), w, h),
-					color: ShadowColour * ShadowOpacity);
+					color: (alternateColour ? ShadowColourAlternate : ShadowColour) * ShadowOpacity);
 			}
 			// Draw window bar container
 			draw(c: colour);
@@ -327,7 +327,8 @@ namespace InteractiveSchedule.Interface
 
 			void draw(Color c)
 			{
-				Point origin = new Point(simpleStyle ? 9 : 0, 9);
+				const int sourceWidth = 9;
+				Point origin = new Point((simpleStyle ? sourceWidth : 0) + (alternateColour ? sourceWidth * 2 : 0), 9);
 				Point sideWidths = new Point(1, 8);
 				Point area = new Point(4, 4);
 				Point areaScaled = new Point(4 * MenuScale, 4 * MenuScale);
@@ -396,54 +397,68 @@ namespace InteractiveSchedule.Interface
 		{
 			Color colour = IsSelected ? Color.White : Color.LightSlateGray;
 			Vector2 position;
+			Vector2 offset;
 
-			// Draw window bar container
+			// Window bar container
 			WindowBar.DrawWindowBarContainer(b, x: xPositionOnScreen, y: yPositionOnScreen, w: width, h: height, colour: Desktop.Taskbar.InterfaceColour, greyed: !IsSelected, simpleStyle: !IsSelected);
 			if (ShouldDrawChild)
 			{
 				b.Draw(
 					texture: ModEntry.Sprites,
-					destinationRectangle: new Rectangle(xPositionOnScreen + (1 * MenuScale), yPositionOnScreen + height - (1 * MenuScale), width: width - (2 * MenuScale), height: 1 * MenuScale),
+					destinationRectangle: new Rectangle(
+						xPositionOnScreen + (1 * MenuScale),
+						yPositionOnScreen + height - (1 * MenuScale),
+						width - (2 * MenuScale),
+						1 * MenuScale),
 					sourceRectangle: new Rectangle(1 + (IsSelected ? 0 : 9), 9 + 16 - 2, 1, 1),
 					color: colour);
 			}
 
-			// Draw window icon
+			// Window icon
+			offset = ISUtilities.GetOffsetToCentre(dimensions: new Vector2(IconSource.Width * IconScale), bounds: new Point(width, height));
 			position = new Vector2(
 				xPositionOnScreen + Padding.X,
-				yPositionOnScreen + ((height - IconSource.Height * MenuScale) / 2));
+				yPositionOnScreen + offset.Y);
 			b.Draw(texture: ModEntry.Sprites,
-				destinationRectangle: new Rectangle((int)position.X, (int)position.Y, IconSource.Width * MenuScale, IconSource.Height * MenuScale),
+				destinationRectangle: new Rectangle(
+					(int)position.X,
+					(int)position.Y,
+					IconSource.Width * IconScale,
+					IconSource.Height * IconScale),
 				sourceRectangle: IconSource,
 				color: colour);
 
-			// Draw window title
+			// Window title
+			SpriteFont font = Game1.smallFont;
+			offset = ISUtilities.GetOffsetToCentreText(
+				font: font,
+				text: DisplayName,
+				bounds: new Point(width, height),
+				wrap: false);
 			position = new Vector2(
-				xPositionOnScreen + (Padding.X * 2) + (IconSource.Width * MenuScale),
-				yPositionOnScreen + (Game1.smallFont.MeasureString(DisplayName).Y / MenuScale));
-			if (IsSelected)
-			{
-				Utility.drawTextWithColoredShadow(b: b, text: DisplayName, font: Game1.smallFont, position: position, color: colour, shadowColor: CustomMenu.ShadowColour);
-			}
-			else
-			{
-				b.DrawString(spriteFont: Game1.smallFont, text: DisplayName, position: position, color: colour);
-			}
+				xPositionOnScreen + (Padding.X * 2) + (IconSource.Width * IconScale),
+				yPositionOnScreen + offset.Y);
+			this.DrawText(b,
+				position: position,
+				text: DisplayName,
+				font: font,
+				colour: colour,
+				drawShadow: IsSelected);
 
 			if (!IsContentHidden && ShouldDrawMenuButtons)
 			{
 				Point mouse = Game1.getMousePosition();
 				foreach (ClickableTextureComponent button in MenuButtons)
 				{
-					// Draw menu buttons
+					// Menu buttons
 					if (IsSelected)
 						button.draw(b);
 					else
 						button.draw(b, c: colour, layerDepth: 1f);
 
-					// Draw highlight over hovered buttons
+					// Highlight over hovered buttons
 					if (button.containsPoint(mouse.X, mouse.Y))
-						CustomMenu.DrawHighlight(b, button);
+						CustomMenu.DrawHighlight(b, button.bounds);
 				}
 			}
 		}

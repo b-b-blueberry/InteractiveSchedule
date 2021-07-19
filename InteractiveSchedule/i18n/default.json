@@ -11,44 +11,76 @@
 	"ui.add": "Add",
 	"ui.remove": "Remove",
 
+	// Other UI
+	"ui.viewinglocationwidget.viewlocation.label": "{{LocationName}}",
+	"ui.viewinglocationwidget.farmerlocation.label": " — {{LocationName}}",
+
 	// Window strings
 	// titles
 	"ui.windowmenu.title": "Menu",
 	"ui.windowbarmenu.title": "Menu",
 	"ui.modinfomenu.title": "Interactive Schedule",
 	"ui.characterlistmenu.title": "Characters",
-	"ui.tileinfomenu.title": "Tiles",
+	"ui.tileinfomenu.title": "Location Data",
 	"ui.mapmenu.title": "World Map",
 	"ui.schedulepreviewmenu.title": "Schedule Preview",
+	"ui.buildmenu.title": "Build And Deploy",
+	"ui.assetviewmenu.title": "Asset Viewer",
+	"ui.projectviewmenu.title": "Project Explorer",
 	"ui.datetimepickermenu.title": "Date and Time",
 	"ui.modinfo.body": "body text here",
 	"ui.modinfo.credit": "blueberry - 2021",
 	// tabs
 	"ui.tab.tileproperties.label": "Properties",
 	"ui.tab.tileindexes.label": "Indexes",
-	// contents
+	"ui.tab.project.label": "Project",
+	"ui.tab.manifest.label": "Manifest",
+	"ui.tab.files.label": "Files",
+	// headings
 	"ui.tileinfo.home.heading": "Coordinates",
 	"ui.tileinfo.tile.heading": "Tile Info",
 	"ui.tileinfo.locationformat": "{{LocationName}}\n{{TilePosition}}",
 	"ui.locationselect.label": "Where do you wish to go?",
-	"ui.tileinfo.tileproperties.text.none": "No properties.",
 	"ui.schedulepreview.home.heading": "Schedule Preview",
+	"ui.schedulepreview.overview.heading": "Master schedule",
+	"ui.projectview.home.heading": "Projects",
+	// elements
+	"ui.tileinfo.tileproperties.text.none": "No properties.",
 	"ui.schedulepreview.home.text": "No characters selected.",
+	"ui.characterlist.properties.gender": "Gender: {{MaleFemale}}",
+	"ui.characterlist.properties.birthday": "Birthday: {{SeasonName}} {{DayNumber}} ({{DayName}})",
+	"ui.characterlist.properties.datable": "Datable: {{TrueFalse}}",
+	"ui.characterlist.properties.sociable": "Sociable: {{TrueFalse}}",
+	"ui.characterlist.properties.visible": "Visible: {{TrueFalse}}",
+	"ui.characterlist.properties.scheduled": "Scheduled: {{TrueFalse}}",
+	"ui.characterlist.properties.male": "Male",
+	"ui.characterlist.properties.female": "Female",
+	"ui.characterlist.properties.currentlocation": "Current location",
+	"ui.characterlist.properties.defaultlocation": "Default location",
+	"ui.projectview.project.guid": "GUID: {{Value}}",
+	"ui.projectview.project.name": "Project Name",
+	"ui.projectview.project.isactive": "Currently loaded:",
+	"ui.projectview.text.none": "No projects found.",
+	"ui.projectview.title.none": "null project",
 
 	// ActionButtons
 	"action.characterlistmenu.gotobutton.label": "Go to",
-	"action.characterlistmenu.openschedulebutton.label": "View schedule",
+	"action.characterlistmenu.viewschedulebutton.label": "View schedule",
 	"action.characterlistmenu.returnfrombutton.label": "Return to farmer",
-	"action.characterlistmenu.viewspawnbutton.label": "View spawn point",
+	"action.characterlistmenu.gotospawnbutton.label": "Go to spawn point",
 	"action.mapmenu.warpherebutton.label": "Warp farmer to this location",
 	"action.mapmenu.viewlocationbutton.label": "View location...",
-	"action.mapmenu.returnviewlocationbutton.label": "Return to current location",
+	"action.mapmenu.returnviewlocationbutton.label": "Return to farmer",
 	"action.tileinfomenu.gridviewbutton.label": "Toggle grid view",
 	"action.tileinfomenu.tilehighlightbutton.label": "Toggle tile highlighting",
 	"action.tileinfomenu.pathslayerbutton.label": "Toggle paths layer",
+	"action.schedulepreviewmenu.viewcharacterbutton.label": "View character",
+	"action.schedulepreviewmenu.editlistbutton.label": "Add or remove entries",
+	"action.projectviewmenu.newprojectbutton.label": "New project",
 
 	// Notifications
 	"notif.warping.text": "Viewing {{LocationName}}..",
+	"notif.error_warp_already.text": "Farmer is already at this location.",
 
 
 	// ???

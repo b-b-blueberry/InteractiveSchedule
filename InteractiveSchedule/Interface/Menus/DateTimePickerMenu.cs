@@ -14,8 +14,8 @@ namespace InteractiveSchedule.Interface.Menus
 		public override bool IsActionButtonSidebarVisible => true;
 
 
-		public DateTimePickerMenu(Point position, WindowPage modalParent = null)
-			: base(position, modalParent)
+		public DateTimePickerMenu(Point position)
+			: base(position)
 		{
 		}
 
@@ -43,11 +43,6 @@ namespace InteractiveSchedule.Interface.Menus
 			base.AddActionButtons();
 		}
 
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
-		{
-			base.receiveLeftClick(x, y, playSound);
-		}
-
 		public override void receiveKeyPress(Keys key)
 		{
 			base.receiveKeyPress(key);
@@ -58,7 +53,15 @@ namespace InteractiveSchedule.Interface.Menus
 			base.update(time);
 		}
 
-		public override void DrawContent(SpriteBatch b)
+		protected override void Hover(int x, int y)
+		{
+		}
+
+		protected override void LeftClick(int x, int y, bool playSound)
+		{
+		}
+
+		protected override void DrawContent(SpriteBatch b)
 		{
 		}
 

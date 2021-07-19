@@ -31,16 +31,16 @@ namespace InteractiveSchedule.Interface.Menus
 		private int _gridWidth;
 		private static Texture2D _pathsTexture;
 
-		private TilePageTabView _tilePageTabView;
+		private Views.TileTabView _tilePageTabView;
 
 		public override bool IsOnHomePage => PreservedCursorTiles.Count == 0;
 		public override bool IsUpButtonVisible => !IsOnHomePage;
 		public override bool IsActionButtonSidebarVisible => true;
 
-		public TileInfoMenu(Point position) : base(position: position)
+		public TileInfoMenu(Point position)
+			: base(position: position)
 		{
 			ModEntry.Instance.Helper.Events.Display.RenderedWorld += this.Display_RenderedWorld;
-			this.RealignElements();
 		}
 
 		protected override void cleanupBeforeExit()
@@ -81,13 +81,13 @@ namespace InteractiveSchedule.Interface.Menus
 			if (_tilePageTabView == null)
 			{
 				Point relativePosition = new Point(
-					BorderSafeArea.X - xPositionOnScreen,
-					BorderSafeArea.Y - yPositionOnScreen
+					(int)BorderSafeOffset.X,
+					(int)BorderSafeOffset.Y
 						+ (int)HeadingTextFont.MeasureString(ModEntry.Instance.i18n.Get("ui.tileinfo.tile.heading")).Y
 						+ (Padding.Y * 2)
 						+ (int)BodyTextFont.MeasureString("Eggbody").Y
 						+ (Padding.Y * 3));
-				_tilePageTabView = new TilePageTabView(parentMenu: this, relativePosition: relativePosition);
+				_tilePageTabView = new Views.TileTabView(parentMenu: this, relativePosition: relativePosition);
 			}
 			else
 			{
@@ -120,21 +120,9 @@ namespace InteractiveSchedule.Interface.Menus
 		{
 			PreservedTileLocationName = location.Name;
 			PreservedTilePosition = tilePosition;
-			PreservedCursorTiles = this.GetTilesAtPosition(tilePosition);
+			PreservedCursorTiles = ISUtilities.GetTilesAtPosition(tilePosition);
 			_tilePageTabView.SetTileSheetImages(PreservedCursorTiles);
 			return PreservedCursorTiles.Count > 0;
-		}
-
-		private List<Tile> GetTilesAtPosition(Vector2 tilePosition)
-		{
-			List<Tile> tiles = new List<Tile>();
-			foreach (Layer layer in Game1.currentLocation.Map.Layers.Reverse())
-			{
-				Tile tile = layer.Tiles[(int)tilePosition.X, (int)tilePosition.Y];
-				if (tile != null)
-					tiles.Add(tile);
-			}
-			return tiles;
 		}
 
 		public override void receiveKeyPress(Keys key)
@@ -143,13 +131,13 @@ namespace InteractiveSchedule.Interface.Menus
 			_tilePageTabView.receiveKeyPress(key);
 		}
 
-		public override void receiveLeftClick(int x, int y, bool playSound = true)
+		protected override void Hover(int x, int y)
 		{
-			base.receiveLeftClick(x, y, playSound);
+			_tilePageTabView.performHoverAction(x, y);
+		}
 
-			if (!IsSelected || !ShouldDraw)
-				return;
-
+		protected override void LeftClick(int x, int y, bool playSound)
+		{
 			// Action buttons
 			if (SidebarActionButtons.Any())
 			{
@@ -171,18 +159,6 @@ namespace InteractiveSchedule.Interface.Menus
 			}
 
 			_tilePageTabView.receiveLeftClick(x, y, playSound);
-		}
-
-		public override void performHoverAction(int x, int y)
-		{
-			_hoverText = "";
-
-			base.performHoverAction(x, y);
-
-			if (!ShouldUpdateHoverText)
-				return;
-
-			_tilePageTabView.performHoverAction(x, y);
 		}
 
 		private void Display_RenderedWorld(object sender, StardewModdingAPI.Events.RenderedWorldEventArgs e)
@@ -214,11 +190,11 @@ namespace InteractiveSchedule.Interface.Menus
 			Vector2 targetPosition;
 			//Tile tile = ModEntry.GetTileOnHighestLayer(location: Game1.currentLocation, x: (int)targetPosition.X, y: (int)targetPosition.Y);
 
-			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
+			Vector2 position = ContentOrigin;
 			string text;
 
 			text = ModEntry.Instance.i18n.Get("ui.tileinfo.home.heading");
-			position.Y += this.DrawHeading(b, position: position, text: text, drawBackground: true);
+			position.Y += this.DrawHeading(b, position: position, text: text, drawBackground: true).Y;
 
 			targetPosition = new Vector2(Game1.viewport.X, Game1.viewport.Y);
 			text = "View: " + targetPosition.ToString();
@@ -248,15 +224,11 @@ namespace InteractiveSchedule.Interface.Menus
 		private void DrawTilePage(SpriteBatch b)
 		{
 			// Heading
-			Vector2 position = Utility.PointToVector2(ContentSafeArea.Location);
+			Vector2 position = ContentOrigin;
 			position.Y += this.DrawHeading(b,
 				position: position,
-				text: ModEntry.Instance.i18n.Get("ui.tileinfo.tile.heading") + "   " + PreservedTilePosition,
-				drawBackground: true);
-			position.Y += Padding.Y * 1;
-
-			// Tile coordinates
-			position.Y += this.DrawSubheading(b, position: position, text: PreservedTileLocationName);
+				text: $"{PreservedTileLocationName} {PreservedTilePosition}",
+				drawBackground: true).Y;
 
 			// Tile tab view contents
 			_tilePageTabView.draw(b);
@@ -311,7 +283,7 @@ namespace InteractiveSchedule.Interface.Menus
 			if (showInfo)
 			{
 				// Mark tiles under cursor
-				CursorTiles = this.GetTilesAtPosition(Game1.currentCursorTile);
+				CursorTiles = ISUtilities.GetTilesAtPosition(Game1.currentCursorTile);
 
 				// Tile coordinates
 				float scale = 2f;
@@ -415,7 +387,7 @@ namespace InteractiveSchedule.Interface.Menus
 			}
 		}
 
-		public override void DrawContent(SpriteBatch b)
+		protected override void DrawContent(SpriteBatch b)
 		{
 			if (IsOnHomePage)
 			{

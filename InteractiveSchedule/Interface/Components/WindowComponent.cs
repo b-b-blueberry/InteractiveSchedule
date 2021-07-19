@@ -31,7 +31,7 @@ namespace InteractiveSchedule.Interface.Components
 				yPositionOnScreen += windowBar.height;
 			else if (this is WindowPage windowPage && _parentMenu != null)
 				windowPage.CentreInParent();
-	}
+		}
 
 		public override void SetDefaults()
 		{

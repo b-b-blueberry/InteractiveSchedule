@@ -22,14 +22,14 @@ namespace InteractiveSchedule.Interface.Components
 		
 
 		protected TabViewComponent(IClickableMenu parentMenu, Point relativePosition)
-			: base(parentMenu: parentMenu, relativePosition: relativePosition)
+			: base(parentMenu: parentMenu, relativePosition: relativePosition, drawBorder: false)
 		{
 		}
 
 		public override void SetDefaults()
 		{
 			base.SetDefaults();
-			TabFont = Game1.smallFont;
+			TabFont = ModEntry.MonoThinFont;
 			BorderWidth = 1;
 		}
 
@@ -65,7 +65,7 @@ namespace InteractiveSchedule.Interface.Components
 			ContentSafeArea = new Rectangle(
 				BorderSafeArea.X + Padding.X,
 				BorderSafeArea.Y + Padding.Y,
-				BorderSafeArea.Width - (Padding.X * 2),
+				BorderSafeArea.Width - Padding.X,
 				BorderSafeArea.Height - (Padding.Y * 2));
 		}
 

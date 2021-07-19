@@ -29,6 +29,7 @@ namespace InteractiveSchedule.Interface
 		/// </summary>
 		public readonly List<IClickableMenu> Children = new List<IClickableMenu>();
 		public int SelectedChildIndex;
+		public readonly List<CustomMenu> Widgets = new List<CustomMenu>();
 		/// <summary>
 		/// Collection of notifications to show to the user for some duration before being removed.
 		/// </summary>
@@ -58,36 +59,72 @@ namespace InteractiveSchedule.Interface
 			Flag,
 		}
 		internal Cursor _mouseCursor;
-		internal float _rightClickHeldTimer;
 		internal Vector2 _cameraDragOrigin;
+		private IModHelper Helper => ModEntry.Instance.Helper;
+		private static readonly Rectangle CursorSource = new Rectangle(0, 60, 13, 13);
+		private static readonly Rectangle CameraDragPinSource = new Rectangle(52, 17, 8, 9);
+		private string _oldHoverText;
+
+		private static float HoverDelayScale;
+		private static float LeftClickHeldDelayScale;
+		private static float RightClickHeldDelayScale;
+		private static float LeftClickHoldDelay;
+		private static float RightClickHoldDelay;
+
+		private static float LeftClickHeldTimer;
+		private static float RightClickHeldTimer;
+		public bool IsLeftClickHeld => LeftClickHeldTimer > LeftClickHoldDelay * LeftClickHeldDelayScale;
+		public bool IsRightClickHeld => RightClickHeldTimer > RightClickHoldDelay * RightClickHeldDelayScale;
+
 		/// <summary>
 		/// Whether all features of the desktop are enabled.
 		/// </summary>
 		private bool _isEnabled = true;
-		private IModHelper Helper => ModEntry.Instance.Helper;
-		private static readonly Rectangle CursorSource = new Rectangle(0, 60, 13, 13);
-		private static readonly Rectangle CameraDragPinSource = new Rectangle(52, 17, 8, 9);
+
 
 		public Desktop()
 		{
 			this.Reset();
-			Helper.Events.Input.ButtonPressed += this.Input_ButtonPressed;
-			Helper.Events.Input.ButtonReleased += this.Input_ButtonReleased;
+			Game1.onScreenMenus.Add(this);
+			Helper.Events.Input.ButtonPressed += Input_ButtonPressed;
+			Helper.Events.Input.ButtonReleased += Input_ButtonReleased;
+		}
+
+		public override void emergencyShutDown()
+		{
+			base.emergencyShutDown();
+
+			Helper.Events.Input.ButtonPressed -= Input_ButtonPressed;
+			Helper.Events.Input.ButtonReleased -= Input_ButtonReleased;
+			ModEntry.Instance.SetActiveState(active: false);
+			Game1.onScreenMenus.Remove(this);
+			Game1.activeClickableMenu = null;
 		}
 
 		protected override void cleanupBeforeExit()
 		{
+			this.SetFarmerVisibility(visible: true);
 			this.ReturnFromViewLocation();
 
-			Helper.Events.Input.ButtonPressed -= this.Input_ButtonPressed;
-			Helper.Events.Input.ButtonReleased -= this.Input_ButtonReleased;
+			Helper.Events.Input.ButtonPressed -= Input_ButtonPressed;
+			Helper.Events.Input.ButtonReleased -= Input_ButtonReleased;
 			Taskbar = null;
 			Children.Clear();
+			Widgets.Clear();
+			Game1.onScreenMenus.Remove(this);
+			Game1.activeClickableMenu = null;
 
 			base.cleanupBeforeExit();
 		}
 
-		public override void SetDefaults() {}
+		public override void SetDefaults()
+		{
+			LeftClickHeldDelayScale = 1f;
+			RightClickHeldDelayScale = 1f;
+			HoverDelayScale = 1f;
+			LeftClickHoldDelay = 1f;
+			RightClickHoldDelay = 1f;
+		}
 
 		public override void RealignElements() {}
 
@@ -97,6 +134,7 @@ namespace InteractiveSchedule.Interface
 		public void Reset()
 		{
 			Children.Clear();
+			Widgets.Clear();
 			this.AddTaskbar();
 		}
 
@@ -117,6 +155,10 @@ namespace InteractiveSchedule.Interface
 				if (child is CustomMenu)
 					((CustomMenu)child).RealignElements();
 			}
+			foreach (CustomMenu widget in Widgets)
+			{
+				widget.RealignElements();
+			}
 		}
 
 		public override void update(GameTime time)
@@ -135,7 +177,7 @@ namespace InteractiveSchedule.Interface
 				}
 				SelectedChildIndex = 0;
 
-				if (_rightClickHeldTimer > RightClickHoldDelay * RightClickHeldDelayScale)
+				if (RightClickHeldTimer > RightClickHoldDelay * RightClickHeldDelayScale)
 				{
 					// Drag camera with RightMouse held
 
@@ -162,51 +204,66 @@ namespace InteractiveSchedule.Interface
 
 			if (Taskbar.IsExpanded)
 			{
-				foreach (IClickableMenu child in Children)
-					child.update(time);
+				for (int i = Children.Count - 1; i >= 0; --i)
+					Children[i].update(time);
+				for (int i = Widgets.Count - 1; i >= 0; --i)
+					Widgets[i].update(time);
 			}
 		}
 
 		public override void draw(SpriteBatch b)
 		{
-			_mouseCursor = (int)Cursor.Pointer;
+			if (Taskbar == null)
+				return;
 
-			// Draw all children
-			if (Taskbar.IsExpanded)
+			try
 			{
-				for (int i = Children.Count - 1; i >= 0; --i)
+				_mouseCursor = (int)Cursor.Pointer;
+
+				// Draw all children
+				if (Taskbar.IsExpanded)
 				{
-					Children[i].draw(b);
+					// Draw widgets under children
+					for (int i = Widgets.Count - 1; i >= 0; --i)
+						Widgets[i].draw(b);
+					for (int i = Children.Count - 1; i >= 0; --i)
+						Children[i].draw(b);
+				}
+
+				// Unique draw behaviours
+				switch (ModEntry.Instance._state)
+				{
+					case ModEntry.States.Path:
+					{
+
+					}
+					break;
+				}
+
+				// Draw taskbar
+				Taskbar.draw(b);
+
+				// Draw extra info popups
+				this.DrawInfoBubbles(b);
+
+				base.draw(b);
+
+				// Mouse cursor
+				if (Taskbar.IsExpanded)
+				{
+					this.DrawCustomCursor(b);
+				}
+				else
+				{
+					Game1.mouseCursorTransparency = 1f;
+					this.drawMouse(b);
 				}
 			}
-
-			// Unique draw behaviours
-			switch (ModEntry.Instance._state)
+			catch (Exception e)
 			{
-				case ModEntry.States.Path:
-				{
-
-				}
-				break;
-			}
-
-			// Draw taskbar
-			Taskbar.draw(b);
-
-			// Draw extra info popups
-			this.DrawInfoBubbles(b);
-
-			base.draw(b);
-
-			// Mouse cursor
-			if (Taskbar.IsExpanded)
-			{
-				this.DrawCustomCursor(b);
-			}
-			else
-			{
-				Game1.mouseCursorTransparency = 1f;
-				this.drawMouse(b);
+				Log.E(e.ToString());
+				this.emergencyShutDown();
+				this.exitThisMenuNoSound();
 			}
 		}
 
@@ -231,6 +288,8 @@ namespace InteractiveSchedule.Interface
 			Taskbar.receiveKeyPress(key);
 			foreach (IClickableMenu child in Children.ToList())
 				child.receiveKeyPress(key);
+			for (int i = Widgets.Count - 1; i >= 0; --i)
+				Widgets[i].receiveKeyPress(key);
 		}
 
 		public override void receiveLeftClick(int x, int y, bool playSound = true)
@@ -244,14 +303,14 @@ namespace InteractiveSchedule.Interface
 				}
 			}
 
-			if (!IsDesktopActive)
-				return;
-
-			if (x < 0 || y < 0 || x > Game1.viewport.Width || y > Game1.viewport.Height)
+			if (!IsDesktopActive || !ISUtilities.IsPointWithinViewportBounds(x, y))
 				return;
 
 			base.receiveLeftClick(x, y, playSound);
 			Taskbar.receiveLeftClick(x, y, playSound);
+
+			// Start LeftMouse held behaviours
+			++LeftClickHeldTimer;
 
 			foreach (IClickableMenu child in Children.ToList())
 			{
@@ -286,12 +345,11 @@ namespace InteractiveSchedule.Interface
 			// Clicking characters in the world will open their page in the character menu
 			if (ISUtilities.GetCharacterUnderCursor() is NPC npc && npc != null)
 			{
-				ClickableTextureComponent icon = Taskbar.Icons.First(i => i.name == nameof(Menus.CharacterListMenu));
-				IClickableMenu menu = Taskbar.TryClickTaskbarIcon(icon.bounds.X, icon.bounds.Y);
+				IClickableMenu menu = Taskbar.ClickTaskbarIcon(typeName: nameof(Menus.CharacterListMenu));
 				if (menu is Menus.CharacterListMenu characterMenu && characterMenu.WindowBar != null)
 				{
 					characterMenu.WindowBar.IsMinimised = false;
-					characterMenu.SelectedChara = npc;
+					characterMenu.SetCharacter(npc);
 					if (SelectedChildIndex == 0)
 						SelectedChildIndex = Children.IndexOf(characterMenu);
 					return;
@@ -311,11 +369,14 @@ namespace InteractiveSchedule.Interface
 					}
 				}
 			}
+
+			for (int i = Widgets.Count - 1; i >= 0; --i)
+				Widgets[i].receiveLeftClick(x, y, playSound);
 		}
 
 		public override void receiveRightClick(int x, int y, bool playSound = true)
 		{
-			if (!IsDesktopActive)
+			if (!IsDesktopActive || !ISUtilities.IsPointWithinViewportBounds(x, y))
 				return;
 
 			base.receiveRightClick(x, y, playSound);
@@ -324,11 +385,11 @@ namespace InteractiveSchedule.Interface
 				child.receiveRightClick(x, y, playSound);
 
 			// Start RightMouse held behaviours
+			++RightClickHeldTimer;
 			if (_cameraDragOrigin == Vector2.Zero)
 			{
 				_cameraDragOrigin = new Vector2(x, y);
 			}
-			++_rightClickHeldTimer;
 		}
 
 		public override void leftClickHeld(int x, int y)
@@ -340,6 +401,8 @@ namespace InteractiveSchedule.Interface
 			Taskbar.leftClickHeld(x, y);
 			foreach (IClickableMenu child in Children.ToList())
 				child.leftClickHeld(x, y);
+			foreach (CustomMenu widget in Widgets.ToList())
+				widget.leftClickHeld(x, y);
 		}
 
 		public override void releaseLeftClick(int x, int y)
@@ -351,6 +414,8 @@ namespace InteractiveSchedule.Interface
 			Taskbar.releaseLeftClick(x, y);
 			foreach (IClickableMenu child in Children.ToList())
 				child.releaseLeftClick(x, y);
+			foreach (CustomMenu widget in Widgets.ToList())
+				widget.releaseLeftClick(x, y);
 		}
 
 		public override void receiveScrollWheelAction(int direction)
@@ -360,8 +425,10 @@ namespace InteractiveSchedule.Interface
 
 			base.receiveScrollWheelAction(direction);
 			Taskbar.receiveScrollWheelAction(direction);
-			foreach (IClickableMenu child in Children)
+			foreach (IClickableMenu child in Children.ToList())
 				child.receiveScrollWheelAction(direction);
+			foreach (CustomMenu widget in Widgets.ToList())
+				widget.receiveScrollWheelAction(direction);
 		}
 
 		public override void performHoverAction(int x, int y)
@@ -371,36 +438,47 @@ namespace InteractiveSchedule.Interface
 
 			base.performHoverAction(x, y);
 			Taskbar.performHoverAction(x, y);
-			foreach (IClickableMenu child in Children)
+			foreach (IClickableMenu child in Children.ToList())
 				child.performHoverAction(x, y);
+			foreach (CustomMenu widget in Widgets.ToList())
+				widget.performHoverAction(x, y);
 		}
 
-		private void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
+		private static void Input_ButtonPressed(object sender, ButtonPressedEventArgs e)
 		{
+			if (ModEntry.Instance.Desktop == null)
+			{
+				ModEntry.Instance.Helper.Events.Input.ButtonPressed -= Input_ButtonPressed;
+				return;
+			}
+
+			if (!Context.IsWorldReady)
+				return;
+
 			if (ModEntry.Config.DebugMode && Game1.keyboardDispatcher.Subscriber == null)
 			{
 				switch (e.Button)
 				{
 					case SButton.J:
 					{
-						Log.D("INTERFACE: Set enabled: " + !_isEnabled);
-						_isEnabled = !_isEnabled;
+						Log.D("INTERFACE: Set enabled: " + !ModEntry.Instance.Desktop._isEnabled);
+						ModEntry.Instance.Desktop._isEnabled = !ModEntry.Instance.Desktop._isEnabled;
 						break;
 					}
 					case SButton.K:
 					{
 						Log.D("INTERFACE: Set new interface");
-						this.exitThisMenu();
+						ModEntry.Instance.Desktop.exitThisMenu();
 						Desktop newInterface = new Desktop();
 						ModEntry.Instance.Desktop = newInterface;
 						break;
 					}
 					case SButton.L:
 					{
-						if (!_isEnabled)
+						if (!ModEntry.Instance.Desktop._isEnabled)
 							break;
 						Log.D("INTERFACE: Clear children");
-						this.Reset();
+						ModEntry.Instance.Desktop.Reset();
 						break;
 					}
 					/*case SButton.OemSemicolon:
@@ -415,7 +493,7 @@ namespace InteractiveSchedule.Interface
 				}
 			}
 
-			if (!IsDesktopActive)
+			if (!ModEntry.Instance.Desktop.IsDesktopActive)
 				return;
 
 			e.Button.TryGetKeyboard(out Keys key);
@@ -423,27 +501,33 @@ namespace InteractiveSchedule.Interface
 			// Menu
 			if (Game1.options.doesInputListContain(Game1.options.menuButton, key))
 			{
-				Helper.Input.Suppress(e.Button);
+				ModEntry.Instance.Helper.Input.Suppress(e.Button);
 				return;
 			}
 
 			// Journal
 			if (Game1.options.doesInputListContain(Game1.options.journalButton, key))
 			{
-				Helper.Input.Suppress(e.Button);
+				ModEntry.Instance.Helper.Input.Suppress(e.Button);
 				return;
 			}
 		}
 
-		private void Input_ButtonReleased(object sender, ButtonReleasedEventArgs e)
+		private static void Input_ButtonReleased(object sender, ButtonReleasedEventArgs e)
 		{
-			if (Taskbar.IsExpanded)
+			if (ModEntry.Instance.Desktop == null)
+			{
+				ModEntry.Instance.Helper.Events.Input.ButtonReleased -= Input_ButtonReleased;
+				return;
+			}
+
+			if (ModEntry.Instance.Desktop.Taskbar.IsExpanded)
 			{
 				// Releasing RightMouse will end camera dragging
 				if (e.Button == SButton.MouseRight)
 				{
-					_rightClickHeldTimer = 0f;
-					_cameraDragOrigin = Vector2.Zero;
+					RightClickHeldTimer = 0f;
+					ModEntry.Instance.Desktop._cameraDragOrigin = Vector2.Zero;
 				}
 			}
 		}
@@ -491,6 +575,15 @@ namespace InteractiveSchedule.Interface
 			string text = ModEntry.Instance.i18n.Get("notif.warping.text", 
 				new { LocationName = locationName });
 			this.PushNotification(text: text, duration: NotificationDuration.Short);
+
+			if (Widgets.FirstOrDefault(widget => widget is ViewingLocationWidget) is ViewingLocationWidget widget && widget != null)
+			{
+				widget.RealignElements();
+			}
+			else
+			{
+				Widgets.Add(new ViewingLocationWidget());
+			}
 		}
 
 		public void ReturnFromViewLocation()
@@ -501,6 +594,8 @@ namespace InteractiveSchedule.Interface
 			LocationRequest locationRequest = Game1.getLocationRequest(ModEntry.Instance._originalLocation);
 			locationRequest.OnWarp += delegate
 			{
+				Widgets.RemoveAll(widget => widget is ViewingLocationWidget);
+
 				this.SetFarmerVisibility(visible: true);
 
 				Taskbar.yPositionOnScreen = 0;
@@ -532,6 +627,39 @@ namespace InteractiveSchedule.Interface
 				x: 0, y: 0,
 				targetName: location, targetX: warpX, targetY: warpY,
 				flipFarmer: false));
+		}
+
+		/// <summary>
+		/// Common method for calling existing <see cref="IClickableMenu.drawHoverText"/> method.
+		/// </summary>
+		internal void DrawHoverText(SpriteBatch b, string text)
+		{
+			if (!string.IsNullOrEmpty(text))
+			{
+				_oldHoverText = text;
+				SpriteFont font = Game1.smallFont;
+				int cursorSize = CursorSource.Height * MenuScale;
+				Vector2 textSize = font.MeasureString(text);
+				Rectangle rectangle = new Rectangle(
+					Game1.getOldMouseX(),
+					Game1.getOldMouseY() + cursorSize,
+					(int)textSize.X + (Padding.X * 2),
+					(int)textSize.Y + (Padding.Y * 2));
+				rectangle.X = Math.Max(0, rectangle.X - Math.Max(0, rectangle.X + rectangle.Width - Game1.viewport.Width));
+				rectangle.Y = Math.Max(0, rectangle.Y - Math.Max(0, rectangle.Y + rectangle.Height + (cursorSize * 2) + Padding.Y - Game1.viewport.Height));
+				WindowBar.DrawWindowBarContainer(b,
+					area: rectangle,
+					colour: Color.White,
+					greyed: false,
+					simpleStyle: true,
+					drawShadow: true,
+					alternateColour: true);
+				this.DrawText(b,
+					position: new Vector2(rectangle.X + Padding.X, rectangle.Y + Padding.Y),
+					text: text,
+					font: font,
+					colour: CustomMenu.BodyTextColour);
+			}
 		}
 
 		private void DrawInfoBubbles(SpriteBatch b)
@@ -567,7 +695,7 @@ namespace InteractiveSchedule.Interface
 			Vector2 position = Utility.PointToVector2(Game1.getMousePosition());
 			Color colour = Color.White;
 			float scale = MenuScale;
-			if (_rightClickHeldTimer > CustomMenu.RightClickHoldDelay * CustomMenu.RightClickHeldDelayScale)
+			if (RightClickHeldTimer > RightClickHoldDelay * RightClickHeldDelayScale)
 			{
 				// Crosshair cursor when dragging camera
 				_mouseCursor = Cursor.Crosshair;
@@ -593,7 +721,13 @@ namespace InteractiveSchedule.Interface
 				colour = Game1.textColor;
 				scale = 2f;
 			}
+			else if (!string.IsNullOrEmpty(_oldHoverText))
+			{
+				// Finger cursor when over clickables
+				_mouseCursor = Cursor.Finger;
+			}
 			else if (Children.All(child => !child.isWithinBounds((int)position.X, (int)position.Y)
+				&& Widgets.All(widget => !widget.isWithinBounds((int)position.X, (int)position.Y))
 				&& ISUtilities.GetCharacterUnderCursor() != null))
 			{
 				// Finger cursor when over NPCs
@@ -610,6 +744,9 @@ namespace InteractiveSchedule.Interface
 				scale: scale,
 				effects: SpriteEffects.None,
 				layerDepth: 1f);
+
+			// Reset hover text
+			_oldHoverText = null;
 		}
 
 		private void DrawSchedulePath(SpriteBatch b)
@@ -625,6 +762,19 @@ namespace InteractiveSchedule.Interface
 					color: Color.White,
 					rotation: 0f, origin: Vector2.Zero, scale: Game1.pixelZoom, effects: SpriteEffects.None, layerDepth: 1f);
 			}
+		}
+
+		public static void DrawGradient(SpriteBatch b, Rectangle area, Color colour, SpriteEffects effects)
+		{
+			b.Draw(
+				texture: ModEntry.Sprites,
+				destinationRectangle: area,
+				sourceRectangle: ModEntry.GradientRect,
+				color: colour,
+				rotation: 0f,
+				origin: Vector2.Zero,
+				effects: effects,
+				layerDepth: 1f);
 		}
 
 		/// <summary>

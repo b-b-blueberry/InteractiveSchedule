@@ -15,7 +15,7 @@ namespace InteractiveSchedule.Interface
 		/// Base scale multiplier for the menu.
 		/// Affects sprite size and menu element bounds.
 		/// </summary>
-		public const int MenuScale = 3;
+		public const int MenuScale = 2;
 
 		public int BorderWidth { get; protected set; }
 		/// <summary>
@@ -28,20 +28,31 @@ namespace InteractiveSchedule.Interface
 		/// Designed for common spaced page elements such as text and images.
 		/// </summary>
 		public Rectangle ContentSafeArea { get; protected set; }
-		protected static float ShadowOpacity;
-		protected static Color ShadowColour;
-		protected static Color BodyTextColour;
-		protected static Color HeadingTextColour;
-		protected static SpriteFont HeadingTextFont => Game1.dialogueFont;
-		protected static SpriteFont BodyTextFont => Game1.smallFont;
+		/// <summary>
+		/// Offset used for relative positioning of elements aligned to border-safe area.
+		/// </summary>
+		public Vector2 BorderSafeOffset => new Vector2(
+					BorderSafeArea.X - xPositionOnScreen,
+					BorderSafeArea.Y - yPositionOnScreen);
+		/// <summary>
+		/// Offset used for relative positioning of elements aligned to content-safe area.
+		/// </summary>
+		public Vector2 ContentSafeOffset => new Vector2(
+			ContentSafeArea.X - xPositionOnScreen,
+			ContentSafeArea.Y - yPositionOnScreen);
+		/// <summary>
+		/// Position for <see cref="DrawContent"/> for the first element to be drawn to.
+		/// </summary>
+		protected Vector2 ContentOrigin => Utility.PointToVector2(ContentSafeArea.Location);
+		internal static float ShadowOpacity;
+		internal static Color ShadowColour;
+		internal static Color ShadowColourAlternate;
+		internal static Color BodyTextColour;
+		internal static Color HeadingTextColour;
+		internal static SpriteFont HeadingTextFont => Game1.dialogueFont;
+		internal static SpriteFont BodyTextFont => Game1.smallFont;
+		internal static SpriteFont TextBoxFont => ModEntry.MonoThinFont;
 
-		protected static float HoverDelayScale;
-		protected static float LeftClickHeldDelayScale;
-		protected static float RightClickHeldDelayScale;
-		protected static float LeftClickHoldDelay;
-		protected static float RightClickHoldDelay;
-
-		protected float _leftClickHeldTimer;
 		protected float _hoverTimer;
 		protected string _hoverText;
 
@@ -58,23 +69,27 @@ namespace InteractiveSchedule.Interface
 		/// </summary>
 		protected static readonly List<string> IconSourceIndex = new List<string>
 		{
-			nameof(Menus.ModInfoMenu), nameof(Menus.CharacterListMenu), nameof(Menus.SchedulePreviewMenu),
-			"GiftsMenu", "DialogueMenu", "FileManagerMenu", "BuildMenu",
-			nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu), "OptionsMenu", "HelpMenu"
+			nameof(Menus.ModInfoMenu), nameof(Menus.CharacterListMenu),
+			"AnimationsMenu", "GiftTastesMenu", "DialogueMenu",
+			nameof(Menus.SchedulePreviewMenu), nameof(Menus.TileInfoMenu), nameof(Menus.MapMenu),
+			"AssetViewMenu",
+			nameof(Menus.ProjectViewMenu),
+			"FileManagerMenu", "BuildMenu", "OptionsMenu", "HelpMenu"
+		};
+		internal static readonly Point WidgetIconSize = new Point(16, 16);
+		internal static readonly Point WidgetIconSourceOrigin = new Point(16, 148);
+		internal enum WidgetSourceIndex
+		{
+			ViewingLocationWidget
 		};
 
 		public virtual void SetDefaults()
 		{
 			ShadowOpacity = 0.5f;
 			ShadowColour = Color.MidnightBlue;
+			ShadowColourAlternate = Color.Black;
 			BodyTextColour = Game1.textColor;
 			HeadingTextColour = Color.White;
-
-			LeftClickHeldDelayScale = 1f;
-			RightClickHeldDelayScale = 1f;
-			HoverDelayScale = 1f;
-			LeftClickHoldDelay = 10f;
-			RightClickHoldDelay = 2f;
 		}
 
 		public abstract void RealignElements();
@@ -84,51 +99,76 @@ namespace InteractiveSchedule.Interface
 			this.SetDefaults();
 		}
 
+		public void SnapWithinViewportBounds()
+		{
+			Point difference = new Point(
+				xPositionOnScreen + width - Game1.viewport.Width,
+				yPositionOnScreen + height - Game1.viewport.Height);
+			if (difference.X > 0)
+				xPositionOnScreen -= Math.Max(0, difference.X);
+			if (difference.Y > 0)
+				yPositionOnScreen -= Math.Max(0, difference.Y);
+			this.RealignElements();
+		}
+
 		/// <summary>
 		/// Returns the source area for the window icon of some <see cref="WindowPage"/> item, indexed by type name.
 		/// </summary>
 		/// <param name="menuTypeName">Type name for this <see cref="WindowPage"/> object.</param>
-		protected static Rectangle GetIconSourceRect(string menuTypeName)
+		internal static Rectangle GetIconSourceRect(string menuTypeName)
 		{
 			return new Rectangle(IconSourceIndex.IndexOf(menuTypeName) * IconSize.X, 48, IconSize.X, IconSize.Y);
+		}
+
+		protected static Rectangle GetWidgetIconSourceRect(string widgetTypeName)
+		{
+			if (!Enum.IsDefined(typeof(WidgetSourceIndex), widgetTypeName))
+				return Rectangle.Empty;
+			int index = (int)Enum.Parse(typeof(WidgetSourceIndex), widgetTypeName);
+			return new Rectangle(
+				WidgetIconSourceOrigin.X + (index * WidgetIconSize.X),
+				WidgetIconSourceOrigin.Y,
+				WidgetIconSize.X,
+				WidgetIconSize.Y);
 		}
 
 		/// <summary>
 		/// Draws a simple light transparent square over the bounds of a <see cref="ClickableComponent"/>.
 		/// </summary>
 		/// <param name="clickable">Clickable item to draw over.</param>
-		protected static void DrawHighlight(SpriteBatch b, ClickableComponent clickable)
+		protected static void DrawHighlight(SpriteBatch b, Rectangle bounds)
 		{
 			b.Draw(
 				texture: Game1.fadeToBlackRect,
-				destinationRectangle: clickable.bounds,
+				destinationRectangle: bounds,
 				color: Color.White * 0.3f);
 		}
 
-		public virtual int DrawText(SpriteBatch b, Vector2 position, string text, SpriteFont font, Color colour)
+		public virtual int DrawText(SpriteBatch b, Vector2 position, string text, SpriteFont font, Color colour, bool drawShadow = false)
 		{
-			b.DrawString(
-				spriteFont: font,
-				text: text,
-				position: position,
-				color: colour);
+			if (drawShadow)
+			{
+				Utility.drawTextWithColoredShadow(b: b,
+					text: text,
+					font: font,
+					position: position,
+					color: colour,
+					shadowColor: ShadowColour);
+			}
+			else
+			{
+				b.DrawString(
+					spriteFont: font,
+					text: text,
+					position: position,
+					color: colour);
+			}
 			return (int)font.MeasureString(text).Y + Padding.Y;
-		}
-
-		/// <summary>
-		/// Common method for calling existing <see cref="IClickableMenu.drawHoverText"/> method.
-		/// </summary>
-		protected void DrawHoverText(SpriteBatch b)
-		{
-			if (!string.IsNullOrEmpty(_hoverText))
-				IClickableMenu.drawHoverText(b, text: _hoverText, font: Game1.smallFont);
 		}
 
 		public override void draw(SpriteBatch b)
 		{
-			if (!string.IsNullOrEmpty(_hoverText))
-				IClickableMenu.drawHoverText(b, text: _hoverText, font: Game1.smallFont);
-
+			ModEntry.Instance.Desktop.DrawHoverText(b, _hoverText);
 			base.draw(b);
 		}
 
@@ -189,6 +229,10 @@ namespace InteractiveSchedule.Interface
 		}
 
 		// NO snapping
+		// NO gamepad support
+		// NO mobile phones
+		// NO fun for children
+		// NO new friends
 		public override void automaticSnapBehavior(int direction, int oldRegion, int oldID) {}
 		protected override void customSnapBehavior(int direction, int oldRegion, int oldID) {}
 		public override void setCurrentlySnappedComponentTo(int id) {}
